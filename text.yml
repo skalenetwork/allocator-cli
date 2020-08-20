@@ -1,0 +1,14 @@
+info:
+  help: Show Allocator CLI info
+init:
+  done: Allocator CLI initialized successfully
+  help: Set Ethereum endpoint and contracts URL
+  endpoint:
+    help: Endpoint of an Ethereum network
+    prompt: Please enter an endpoint for the Ethereum network to connect
+  contracts_url:
+    help: Download URL for the SKALE Allocator ABIs and addresses
+    prompt: Please enter the URL for the SKALE Allocator ABIs and addresses
+  wallet:
+    help: Type of wallet that will be used for signing transactions
+    prompt: Please enter the type of the wallet that will be used for signing transactions
