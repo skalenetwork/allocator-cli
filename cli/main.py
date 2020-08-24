@@ -27,6 +27,8 @@ import click
 from cli import __version__
 from cli.info import BUILD_DATETIME, COMMIT, BRANCH, OS, VERSION
 
+from cli.sgx_wallet import sgx_cli
+
 from utils.validations import UrlType
 from utils.texts import Texts
 from utils.logs import init_logger, init_log_dir
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     init_log_dir()
     init_logger()
     logger.info(f'cmd: {" ".join(str(x) for x in sys.argv)}, v.{__version__}')
-    cmd_collection = click.CommandCollection(sources=[cli])
+    cmd_collection = click.CommandCollection(sources=[cli, sgx_cli])
     try:
         cmd_collection()
     except Exception as err:

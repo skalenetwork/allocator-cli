@@ -46,3 +46,15 @@ class Formatter(object):
 
 def format_date(date):
     return date.strftime("%b %d %Y %H:%M:%S")
+
+
+def print_sgx_info(info):
+    table_data = [
+        ('KEY', 'VALUE'),
+        ('Server url', info['server_url']),
+        ('SSL port', info['ssl_port']),
+        ('Address', info['address']),
+        ('Key', info['key'])
+    ]
+    table = SingleTable(table_data)
+    print(table.table)
