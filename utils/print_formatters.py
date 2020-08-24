@@ -18,11 +18,9 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-import datetime
-import texttable
 
+import texttable
 from terminaltables import SingleTable
-from utils.helper import to_skl, from_wei, permille_to_percent
 
 
 def get_tty_width():
