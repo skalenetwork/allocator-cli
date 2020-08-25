@@ -26,3 +26,29 @@ sgx:
       warning: "WARNING: If you lost the key you will be unable to access your account again"
   info: 
     help: Show information about sgx wallet
+
+escrow:
+  help: Escrow contract commands
+  delegate:
+    help: Delegate tokens to validator
+    validator_id:
+      help: ID of the validator to delegate
+      prompt: Please enter ID of the validator to delegate
+    amount:
+      help: Amount of SKALE tokens to delegate
+      prompt: Please enter amount of SKALE tokens to delegate
+    delegation_period:
+      help: Delegation period (in months)
+      prompt: Please enter delegation period (in months)
+    info:
+      help: Delegation request info
+      prompt: Please enter delegation request info
+    confirm: |-
+      Are you sure you want to delegate your tokens?
+
+pk_file:
+  help: Path to file with private key (only for `software` wallet type)
+yes_opt:
+  prompt: Are you sure?
+wei:
+  help: Show amount in wei

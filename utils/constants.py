@@ -67,3 +67,5 @@ LOG_BACKUP_COUNT = 2
 LOG_DATA_PATH = os.path.join(SKALE_ALLOCATOR_CONFIG_FOLDER, 'log')
 LOG_FILEPATH = os.path.join(LOG_DATA_PATH, 'sk-allocator.log')
 DEBUG_LOG_FILEPATH = os.path.join(LOG_DATA_PATH, 'debug-sk-allocator.log')
+
+DELEGATION_PERIOD_OPTIONS = ['3', '6', '9', '12']  # strings because of click.Choice design
