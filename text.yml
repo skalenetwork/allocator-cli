@@ -45,6 +45,8 @@ escrow:
       prompt: Please enter delegation request info
     confirm: |-
       Are you sure you want to delegate your tokens?
+  undelegate:
+    help: Request undelegation in the end of delegation period
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)

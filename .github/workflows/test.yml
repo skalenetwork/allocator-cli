@@ -50,6 +50,6 @@ jobs:
     - name: Run tests
       run: |
         bash ./scripts/run_tests.sh
-    - name: Codecov
-      run: |
-        codecov -t $CODECOV_TOKEN
+    # - name: Codecov
+    #   run: |
+    #     codecov -t $CODECOV_TOKEN
