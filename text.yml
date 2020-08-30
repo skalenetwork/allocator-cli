@@ -47,6 +47,8 @@ escrow:
       Are you sure you want to delegate your tokens?
   undelegate:
     help: Request undelegation in the end of delegation period
+  retrieve:
+    help: Retrieve vested tokens from the Escrow contract
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)

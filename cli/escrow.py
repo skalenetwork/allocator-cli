@@ -19,7 +19,7 @@
 
 import click
 
-from core.escrow import delegate, undelegate
+from core.escrow import delegate, undelegate, retrieve
 
 from utils.helper import abort_if_false
 from utils.validations import EthAddressType, UrlType, FloatPercentageType
@@ -94,5 +94,16 @@ def _delegate(validator_id, amount, info, pk_file):
 def _undelegate(delegation_id, pk_file):
     undelegate(
         delegation_id=int(delegation_id),
+        pk_file=pk_file
+    )
+
+
+@escrow.command('retrieve', help=TEXTS['retrieve']['help'])
+@click.option(
+    '--pk-file',
+    help=G_TEXTS['pk_file']['help']
+)
+def _retrieve(pk_file):
+    retrieve(
         pk_file=pk_file
     )

@@ -18,7 +18,6 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from yaspin import yaspin
-from skale.utils.web3_utils import (wait_receipt, check_receipt)
 from skale.transactions.result import TransactionError
 
 from utils.helper import to_skl
@@ -44,11 +43,13 @@ def delegate(validator_id, amount, info, pk_file):
             delegation_period=D_DELEGATION_PERIOD,
             info=info,
             beneficiary_address=skale.wallet.address,
+            wait_for=True,
             raise_for_status=False
         )
-        receipt = wait_receipt(skale.web3, tx_res.tx_hash)
-        if not check_receipt(receipt, raise_error=False):
-            sp.write(f'Transaction failed, hash: {tx_res.tx_hash}')
+        try:
+            tx_res.raise_for_status()
+        except TransactionError as err:
+            sp.write(str(err))
             return
         sp.write("✔ Delegation request sent")
 
@@ -70,6 +71,24 @@ def undelegate(delegation_id: int, pk_file: str) -> None:
             sp.write(str(err))
             return
         sp.write("✔ Successfully undelegated")
+
+
+def retrieve(pk_file: str) -> None:
+    skale = init_skale_w_wallet_from_config(pk_file)
+    if not skale:
+        return
+    with yaspin(text='Retrieving tokens', color=SPIN_COLOR) as sp:
+        tx_res = skale.escrow.retrieve(
+            beneficiary_address=skale.wallet.address,
+            wait_for=True,
+            raise_for_status=False,
+        )
+        try:
+            tx_res.raise_for_status()
+        except TransactionError as err:
+            sp.write(str(err))
+            return
+        sp.write("✔ Successfully retrieved tokens")
 
 
 # todo: unfinished
