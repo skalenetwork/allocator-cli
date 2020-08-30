@@ -37,6 +37,10 @@ jobs:
         pip install -e .
         pip install -e .[dev]
         pip install wheel
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@master
+      with:
+        remote: true
     - name: Build library
       run: |
         echo "::set-env name=PROJECT_DIR::$GITHUB_WORKSPACE"
