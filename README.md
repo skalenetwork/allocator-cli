@@ -8,7 +8,9 @@
 
 1.  [Installation](#installation)
 2.  [CLI usage](#cli-usage)  
-    2.1 [Init](#init)
+    2.1 [Init](#init)  
+    2.2 [Escrow](#escrow)  
+    2.3 [SGX](#sgx)  
 3.  [Development](#development)  
 
 ## Installation
@@ -91,6 +93,36 @@ Required params:
 Optional arguments:
 
 -   `--pk-file` - Path to file with private key (only for `software` wallet type)
+
+#### Retrieve tokens
+
+Allows Beneficiary to retrieve vested tokens from the Escrow contract
+
+```bash
+sk-val escrow retrieve
+```
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+
+#### Withdraw bounty
+
+Withdraw earned bounty. Default recipient is the transaction sender.
+
+```bash
+sk-val validator withdraw-bounty [VALIDATOR_ID] --pk-file ./pk.txt
+```
+
+Required params:
+
+1) VALIDATOR_ID - ID of the validator
+
+Optional arguments:
+
+-   `--recipient-address` - Address of the recipient. Defaults to the sender.  
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+-   `--yes` - Confirmation flag
 
 ### SGX commands
 

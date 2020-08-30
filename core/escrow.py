@@ -20,11 +20,8 @@
 from yaspin import yaspin
 from skale.transactions.result import TransactionError
 
-from utils.helper import to_skl
-from utils.web3_utils import (init_skale_from_config,
-                              init_skale_w_wallet_from_config)
-# from utils.print_formatters import print_delegations
-from utils.helper import to_wei, from_wei
+from utils.web3_utils import (init_skale_w_wallet_from_config)
+from utils.helper import to_wei
 from utils.constants import SPIN_COLOR
 
 
@@ -91,16 +88,17 @@ def retrieve(pk_file: str) -> None:
         sp.write("✔ Successfully retrieved tokens")
 
 
-# todo: unfinished
-
 def withdraw_bounty(validator_id, recipient_address, pk_file):
     skale = init_skale_w_wallet_from_config(pk_file)
     if not skale:
         return
+    if not recipient_address:
+        recipient_address = skale.wallet.address
     with yaspin(text='Withdrawing bounty', color=SPIN_COLOR) as sp:
-        tx_res = skale.distributor.withdraw_bounty(
+        tx_res = skale.escrow.withdraw_bounty(
             validator_id=validator_id,
             to=recipient_address,
+            beneficiary_address=skale.wallet.address,
             raise_for_status=False,
             wait_for=True
         )
@@ -110,27 +108,3 @@ def withdraw_bounty(validator_id, recipient_address, pk_file):
             sp.write(str(err))
             return
         sp.write(f'✔ Bounty successfully transferred to {recipient_address}')
-
-
-def locked(address, wei):
-    skale = init_skale_from_config()
-    if not skale:
-        return
-    locked_amount_wei = skale.token_state.get_and_update_locked_amount(address)
-    amount = locked_amount_wei if wei else to_skl(locked_amount_wei)
-    print(f'Locked amount for address {address}:\n{amount}')
-
-
-def earned_bounties(validator_id, address, wei):
-    skale = init_skale_from_config()
-    if not skale:
-        return
-    earned_bounties_data = skale.distributor.get_earned_bounty_amount(validator_id, address)
-    earned_bounties_amount = earned_bounties_data['earned']
-    earned_bounties_msg = f'Earned bounties for {address}, validator ID - {validator_id}: '
-    if not wei:
-        earned_bounties_amount = from_wei(earned_bounties_amount)
-        earned_bounties_msg += f'{earned_bounties_amount} SKL'
-    else:
-        earned_bounties_msg += f'{earned_bounties_amount} WEI'
-    print(earned_bounties_msg + f'\nEnd month: {earned_bounties_data["end_month"]}')

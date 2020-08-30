@@ -19,7 +19,7 @@
 
 import click
 
-from core.escrow import delegate, undelegate, retrieve
+from core.escrow import delegate, undelegate, retrieve, withdraw_bounty
 
 from utils.helper import abort_if_false
 from utils.validations import EthAddressType, UrlType, FloatPercentageType
@@ -107,3 +107,20 @@ def _retrieve(pk_file):
     retrieve(
         pk_file=pk_file
     )
+
+
+@escrow.command('withdraw-bounty', help=TEXTS['withdraw_bounty']['help'])
+@click.argument('validator_id')
+@click.option(
+    '--recipient-address',
+    help=TEXTS['withdraw_bounty']['recipient_address']['help']
+)
+@click.option(
+    '--pk-file',
+    help=G_TEXTS['pk_file']['help']
+)
+@click.option('--yes', is_flag=True, callback=abort_if_false,
+              expose_value=False,
+              prompt=TEXTS['withdraw_bounty']['confirm'])
+def _withdraw_bounty(validator_id, recipient_address, pk_file):
+    withdraw_bounty(int(validator_id), recipient_address, pk_file)

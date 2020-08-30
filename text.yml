@@ -49,6 +49,12 @@ escrow:
     help: Request undelegation in the end of delegation period
   retrieve:
     help: Retrieve vested tokens from the Escrow contract
+  withdraw_bounty:
+    help: Withdraw earned bounty to specified address
+    recipient_address:
+      help: Address of the recipient. Defaults to the sender.
+    confirm: |-
+      Are you sure you want to withdraw bounty?
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)

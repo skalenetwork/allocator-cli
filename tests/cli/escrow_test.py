@@ -1,10 +1,11 @@
 """ Tests for cli/escrow.py module """
 
+from skale.wallets.web3_wallet import generate_wallet
 from skale.utils.contracts_provision.main import _skip_evm_time
 from skale.utils.contracts_provision import MONTH_IN_SECONDS
 
 from cli.escrow import (
-    _delegate, _undelegate, _retrieve
+    _delegate, _undelegate, _retrieve, _withdraw_bounty
 )
 from utils.helper import to_wei
 from tests.constants import (SECOND_TEST_PK_FILE, D_VALIDATOR_ID, D_DELEGATION_AMOUNT,
@@ -115,5 +116,40 @@ def test_retrieve(runner, skale_manager, skale_allocator_beneficiary):
 
     output_list = result.output.splitlines()
     expected_output = '\x1b[K✔ Successfully retrieved tokens'
+    assert expected_output in output_list
+    assert result.exit_code == 0
+
+
+def test_withdraw_bounty_to_sender(runner, skale_allocator_beneficiary):
+    _skip_evm_time(skale_allocator_beneficiary.web3, MONTH_IN_SECONDS * 3)
+    result = runner.invoke(
+        _withdraw_bounty,
+        [
+            str(D_VALIDATOR_ID),
+            '--pk-file', SECOND_TEST_PK_FILE,
+            '--yes'
+        ]
+    )
+    output_list = result.output.splitlines()
+    expected_output = f'\x1b[K✔ Bounty successfully transferred to {skale_allocator_beneficiary.wallet.address}' # noqa
+    assert expected_output in output_list
+    assert result.exit_code == 0
+
+
+def test_withdraw_bounty_to_custom_address(runner, skale_allocator_beneficiary):
+    _skip_evm_time(skale_allocator_beneficiary.web3, MONTH_IN_SECONDS * 3)
+    wallet = generate_wallet(skale_allocator_beneficiary.web3)
+    recipient_address = wallet.address
+    result = runner.invoke(
+        _withdraw_bounty,
+        [
+            str(D_VALIDATOR_ID),
+            '--recipient-address', recipient_address,
+            '--pk-file', SECOND_TEST_PK_FILE,
+            '--yes'
+        ]
+    )
+    output_list = result.output.splitlines()
+    expected_output = f'\x1b[K✔ Bounty successfully transferred to {recipient_address}'
     assert expected_output in output_list
     assert result.exit_code == 0
