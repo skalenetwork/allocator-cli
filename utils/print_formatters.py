@@ -18,11 +18,9 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-import datetime
-import texttable
 
+import texttable
 from terminaltables import SingleTable
-from utils.helper import to_skl, from_wei, permille_to_percent
 
 
 def get_tty_width():
@@ -46,3 +44,15 @@ class Formatter(object):
 
 def format_date(date):
     return date.strftime("%b %d %Y %H:%M:%S")
+
+
+def print_sgx_info(info):
+    table_data = [
+        ('KEY', 'VALUE'),
+        ('Server url', info['server_url']),
+        ('SSL port', info['ssl_port']),
+        ('Address', info['address']),
+        ('Key', info['key'])
+    ]
+    table = SingleTable(table_data)
+    print(table.table)
