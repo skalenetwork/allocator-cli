@@ -5,6 +5,6 @@ PROJECT_DIR=$(dirname $DIR)
 
 export ENDPOINT=http://localhost:8545
 
-# bash $PROJECT_DIR/helper-scripts/deploy_test_allocator.sh
+bash $PROJECT_DIR/helper-scripts/deploy_test_allocator.sh
 bash $PROJECT_DIR/scripts/prepare_configs.sh
 bash $PROJECT_DIR/scripts/run_tests.sh

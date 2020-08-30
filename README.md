@@ -56,6 +56,42 @@ Usage example:
 sk-alloc init -e ws://geth.test.com:8546 -c https://test.com/allocator.json --wallet software
 ```
 
+### Escrow commands
+
+#### Delegate
+
+Delegate tokens to validator
+
+```bash
+sk-val escrow delegate
+```
+
+Required arguments:
+
+-   `--validator-id` - ID of the validator to delegate
+-   `--amount` - Amount of SKALE tokens to delegate
+-   `--info` - Delegation request info
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+
+#### Request undelegation
+
+Request undelegation in the end of delegation period
+
+```bash
+sk-val escrow undelegate [DELEGATION_ID]
+```
+
+Required params:
+
+1) Delegation ID - ID of the delegation
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+
 ### SGX commands
 
 #### Init 
