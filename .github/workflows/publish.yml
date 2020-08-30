@@ -42,22 +42,9 @@ jobs:
       with:
         remote: true
     - name: Build library
-      run: |
-        echo "::set-env name=PROJECT_DIR::$GITHUB_WORKSPACE"
-        echo PROJECT_DIR: $GITHUB_WORKSPACE
-        export BRANCH=${GITHUB_REF##*/}
-        echo "Branch $BRANCH"
-        export VERSION=$(bash ./helper-scripts/calculate_version.sh)
-        echo "::set-env name=VERSION::$VERSION"
-        echo "Version $VERSION"
-        bash ./scripts/build.sh $VERSION $BRANCH
-        export OS=`uname -s`-`uname -m`
-        export EXECUTABLE_NAME=sk-alloc-$VERSION-$OS
-        echo "::set-env name=BRANCH::$BRANCH"
-        echo "::set-env name=EXECUTABLE_NAME::$EXECUTABLE_NAME"
+      run: bash ./scripts/build_binary_ga.sh
     - name: Upload to DO
-      run: |
-        python ./helper-scripts/upload_to_do.py ./dist/$EXECUTABLE_NAME allocator-cli $BRANCH/$EXECUTABLE_NAME
+      run: bash ./scripts/upload_to_do_ga.sh
     - name: Checkout code
       uses: actions/checkout@master
     - name: Create Release
