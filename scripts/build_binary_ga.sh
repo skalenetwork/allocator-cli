@@ -6,6 +6,7 @@ echo PROJECT_DIR: $GITHUB_WORKSPACE
 export BRANCH=${GITHUB_REF##*/}
 echo "Branch $BRANCH"
 
+export VERSION=$(python setup.py --version)
 export VERSION=$(bash ./helper-scripts/calculate_version.sh)
 
 echo "::set-env name=VERSION::$VERSION"
