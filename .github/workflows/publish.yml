@@ -43,7 +43,7 @@ jobs:
         echo PROJECT_DIR: $GITHUB_WORKSPACE
         export BRANCH=${GITHUB_REF##*/}
         echo "Branch $BRANCH"
-        export VERSION=$(bash ./scripts/calculate_version.sh)
+        export VERSION=$(bash ./helper-scripts/calculate_version.sh)
         echo "::set-env name=VERSION::$VERSION"
         echo "Version $VERSION"
         bash ./scripts/build.sh $VERSION $BRANCH
