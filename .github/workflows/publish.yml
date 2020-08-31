@@ -38,7 +38,7 @@ jobs:
         pip install -e .[dev]
         pip install wheel
     - name: Checkout submodules
-      run: git submodule update --remote
+      run: git submodule update --init
       #uses: textbook/git-checkout-submodule-action@master
       #with:
       #  remote: true
