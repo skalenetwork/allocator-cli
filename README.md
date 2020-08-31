@@ -111,7 +111,7 @@ Optional arguments:
 Withdraw earned bounty. Default recipient is the transaction sender.
 
 ```bash
-sk-val validator withdraw-bounty [VALIDATOR_ID] --pk-file ./pk.txt
+sk-val escrow withdraw-bounty [VALIDATOR_ID] --pk-file ./pk.txt
 ```
 
 Required params:
