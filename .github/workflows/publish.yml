@@ -38,7 +38,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.7]
         include:
           - os: ubuntu-latest
             asset_name: sk-alloc-Linux-x86_64
@@ -46,10 +45,10 @@ jobs:
             asset_name: sk-alloc-Darwin-x86_64
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.7
     - name: Install ubuntu dependencies
       if: matrix.os == 'ubuntu-latest'
       run: |
