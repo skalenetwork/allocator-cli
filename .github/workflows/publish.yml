@@ -24,6 +24,8 @@ jobs:
       - name: Set Versions
         run: |
           bash ./scripts/set_versions_ga.sh
+          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=branch::$BRANCH"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -38,8 +40,6 @@ jobs:
         id: export_outputs
         run: |
           echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
-          echo "::set-output name=version::${{ env.VERSION }}"
-          echo "::set-output name=branch::${{ env.BRANCH }}"
   build_and_publish:
     #if: github.event.pull_request.merged
     needs: create_release
