@@ -17,5 +17,3 @@ export EXECUTABLE_NAME=sk-alloc-$VERSION-$OS
 
 echo "::set-env name=BRANCH::$BRANCH"
 echo "::set-env name=EXECUTABLE_NAME::$EXECUTABLE_NAME"
-
-bash ./scripts/build.sh $VERSION $BRANCH
