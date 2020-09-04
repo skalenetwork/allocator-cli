@@ -16,6 +16,7 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.create_release.outputs.version }}
+      branch: ${{ steps.create_release.outputs.branch }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
