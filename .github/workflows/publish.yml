@@ -39,8 +39,8 @@ jobs:
         id: export_outputs
         run: |
           echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
-          echo "::set-output name=version::${{ env.VERSION }}"
-          echo "::set-output name=branch::${{ env.BRANCH }}"
+          echo "::set-output name=version::123"
+          echo "::set-output name=branch::456"
   build_and_publish:
     #if: github.event.pull_request.merged
     needs: create_release
