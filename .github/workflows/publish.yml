@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update --init
       - name: Set Versions
         run: |
           bash ./scripts/set_versions_ga.sh
