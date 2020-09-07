@@ -21,13 +21,13 @@
 -   Download executable
 
 ```bash
-VERSION_NUM={put the version number here} && sudo -E bash -c "curl -L https://allocator-cli.sfo2.digitaloceanspaces.com/develop/sk-alloc-$VERSION_NUM-`uname -s`-`uname -m` >  /usr/local/bin/sk-alloc"
+VERSION_NUM={put the version number here} && sudo -E bash -c 'curl -L "https://github.com/skalenetwork/allocator-cli/releases/download/$VERSION_NUM/sk-alloc-$VERSION_NUM-`uname -s`-`uname -m`" >  /usr/local/bin/sk-alloc'
 ```
 
--   Apply executable permissions to the binary:
+-  Apply executable permissions to the binary:
 
 ```bash
-chmod +x /usr/local/bin/sk-alloc
+sudo chmod +x /usr/local/bin/sk-alloc
 ```
 
 ### Where to find out the latest version
