@@ -12,8 +12,6 @@ export VERSION=$(bash ./helper-scripts/calculate_version.sh)
 echo "::set-env name=VERSION::$VERSION"
 echo "Version $VERSION"
 
-bash ./scripts/build.sh $VERSION $BRANCH
-
 export OS=`uname -s`-`uname -m`
 export EXECUTABLE_NAME=sk-alloc-$VERSION-$OS
 
