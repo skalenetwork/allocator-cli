@@ -16,7 +16,6 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.export_outputs.outputs.version }}
       branch: ${{ steps.export_outputs.outputs.branch }}
-      executable_name: ${{ steps.export_outputs.outputs.executable_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -40,7 +39,6 @@ jobs:
         run: |
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=branch::$BRANCH"
-          echo "::set-output name=executable_name::$EXECUTABLE_NAME"
   build_and_publish:
     if: github.event.pull_request.merged
     needs: create_release
@@ -48,7 +46,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'macos-latest']
+        include:
+          - os: ubuntu-latest
+            asset_name: sk-alloc-${{ needs.create_release.outputs.version }}-Linux-x86_64
+          - os: macos-latest
+            asset_name: sk-alloc-${{ needs.create_release.outputs.version }}-Darwin-x86_64
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.7
@@ -79,6 +81,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ./dist/${{ needs.create_release.outputs.executable_name }}
-        asset_name: ${{ needs.create_release.outputs.executable_name }}
+        asset_path: ./dist/${{ matrix.asset_name }}
+        asset_name: ${{ matrix.asset_name }}
         asset_content_type: application/octet-stream
