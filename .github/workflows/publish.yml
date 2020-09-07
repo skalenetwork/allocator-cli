@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
-      version: ${{ steps.create_release.outputs.version }}
-      branch: ${{ steps.create_release.outputs.branch }}
+      version: ${{ steps.export_outputs.outputs.version }}
+      branch: ${{ steps.export_outputs.outputs.branch }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -76,11 +76,11 @@ jobs:
       #uses: textbook/git-checkout-submodule-action@master
       #with:
       #  remote: true
-    # - name: Build library
-    #   run: |
-    #     echo ${{ needs.create_release.outputs.version }}
-    #     echo ${{ needs.create_release.outputs.branch }}
-    #     bash ./scripts/build.sh ${{ needs.create_release.outputs.version }} ${{ needs.create_release.outputs.branch }}
+    - name: Build library
+      run: |
+        echo ${{ needs.create_release.outputs.version }}
+        echo ${{ needs.create_release.outputs.branch }}
+        bash ./scripts/build.sh ${{ needs.create_release.outputs.version }} ${{ needs.create_release.outputs.branch }}
     - name: Build project # This would actually build your project, using zip for an example artifact
       run: |
         echo 123 > ./my-artifact
