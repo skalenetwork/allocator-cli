@@ -39,6 +39,7 @@ def test_delegate(runner, skale_manager, beneficiary_escrow_address):
         [
             '--validator-id', D_VALIDATOR_ID,
             '--amount', DELEGATION_AMOUNT_SKL,
+            '--delegation-period', str(D_DELEGATION_PERIOD),
             '--info', D_DELEGATION_INFO,
             '--pk-file', SECOND_TEST_PK_FILE,
             '--yes'

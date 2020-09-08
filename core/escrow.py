@@ -28,7 +28,7 @@ from utils.constants import SPIN_COLOR
 D_DELEGATION_PERIOD = 3
 
 
-def delegate(validator_id, amount, info, pk_file):
+def delegate(validator_id, amount, delegation_period, info, pk_file):
     skale = init_skale_w_wallet_from_config(pk_file)
     if not skale:
         return
@@ -37,7 +37,7 @@ def delegate(validator_id, amount, info, pk_file):
         tx_res = skale.escrow.delegate(
             validator_id=validator_id,
             amount=amount_wei,
-            delegation_period=D_DELEGATION_PERIOD,
+            delegation_period=delegation_period,
             info=info,
             beneficiary_address=skale.wallet.address,
             wait_for=True,
