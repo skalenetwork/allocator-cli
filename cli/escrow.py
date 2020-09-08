@@ -77,10 +77,11 @@ def escrow():
 @click.option('--yes', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt=TEXTS['delegate']['confirm'])
-def _delegate(validator_id, amount, info, pk_file):
+def _delegate(validator_id, amount, delegation_period, info, pk_file):
     delegate(
         validator_id=validator_id,
         amount=amount,
+        delegation_period=int(delegation_period),
         info=info,
         pk_file=pk_file
     )
