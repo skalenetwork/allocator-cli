@@ -22,6 +22,7 @@ import click
 from core.escrow import delegate, undelegate, retrieve, withdraw_bounty
 
 from utils.helper import abort_if_false
+from utils.constants import DELEGATION_PERIOD_OPTIONS
 from utils.validations import EthAddressType, UrlType, FloatPercentageType
 from utils.texts import Texts
 
@@ -57,12 +58,12 @@ def escrow():
     help=TEXTS['delegate']['amount']['help'],
     prompt=TEXTS['delegate']['amount']['prompt']
 )
-# @click.option(
-#     '--delegation-period',
-#     type=click.Choice(DELEGATION_PERIOD_OPTIONS),
-#     help=TEXTS['delegate']['delegation_period']['help'],
-#     prompt=TEXTS['delegate']['delegation_period']['prompt']
-# )
+@click.option(
+    '--delegation-period',
+    type=click.Choice(DELEGATION_PERIOD_OPTIONS),
+    help=TEXTS['delegate']['delegation_period']['help'],
+    prompt=TEXTS['delegate']['delegation_period']['prompt']
+)
 @click.option(
     '--info',
     type=str,
