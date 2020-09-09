@@ -127,6 +127,8 @@ Optional arguments:
 
 ### SGX commands
 
+> Note: SGX wallet is not ready for production use yet.
+
 #### Init 
  Initialize sgx wallet  
  ```bash
