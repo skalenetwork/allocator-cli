@@ -65,7 +65,7 @@ sk-alloc init -e ws://geth.test.com:8546 -c https://test.com/allocator.json --wa
 Delegate tokens to validator
 
 ```bash
-sk-val escrow delegate
+sk-alloc escrow delegate
 ```
 
 Required arguments:
@@ -84,7 +84,7 @@ Optional arguments:
 Request undelegation in the end of delegation period
 
 ```bash
-sk-val escrow undelegate [DELEGATION_ID]
+sk-alloc escrow undelegate [DELEGATION_ID]
 ```
 
 Required params:
@@ -100,7 +100,7 @@ Optional arguments:
 Allows Beneficiary to retrieve vested tokens from the Escrow contract
 
 ```bash
-sk-val escrow retrieve
+sk-alloc escrow retrieve
 ```
 
 Optional arguments:
@@ -112,7 +112,7 @@ Optional arguments:
 Withdraw earned bounty. Default recipient is the transaction sender.
 
 ```bash
-sk-val escrow withdraw-bounty [VALIDATOR_ID] --pk-file ./pk.txt
+sk-alloc escrow withdraw-bounty [VALIDATOR_ID] --pk-file ./pk.txt
 ```
 
 Required params:

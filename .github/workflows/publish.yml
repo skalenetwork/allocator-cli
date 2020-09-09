@@ -24,6 +24,14 @@ jobs:
       - name: Set Versions
         run: |
           bash ./scripts/set_versions_ga.sh
+      - name: Set release
+        run: |
+          if [[ "$BRANCH" == "stable" ]]; then
+            export PRERELEASE=false
+          else
+            export PRERELEASE=true
+          fi
+          echo "::set-env name=PRERELEASE::$PRERELEASE"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -33,7 +41,7 @@ jobs:
           tag_name: ${{ env.VERSION }}
           release_name: ${{ env.VERSION }}
           draft: false
-          prerelease: false
+          prerelease: ${{ env.PRERELEASE }}
       - name: Export outputs
         id: export_outputs
         run: |
