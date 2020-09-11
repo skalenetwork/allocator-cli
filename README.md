@@ -21,7 +21,7 @@
 -   Download executable
 
 ```bash
-VERSION_NUM={put the version number here} && sudo -E bash -c 'curl -L "https://github.com/skalenetwork/allocator-cli/releases/download/$VERSION_NUM/sk-alloc-$VERSION_NUM-`uname -s`-`uname -m`" >  /usr/local/bin/sk-alloc'
+VERSION_NUM={put the version number here} && sudo -E bash -c "curl -L https://github.com/skalenetwork/allocator-cli/releases/download/$VERSION_NUM/sk-alloc-$VERSION_NUM-`uname -s`-`uname -m` >  /usr/local/bin/sk-alloc"
 ```
 
 -  Apply executable permissions to the binary:
