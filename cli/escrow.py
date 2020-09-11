@@ -19,7 +19,8 @@
 
 import click
 
-from core.escrow import delegate, undelegate, retrieve, withdraw_bounty
+from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty,
+                         cancel_pending_delegation, retrieve_after_termination)
 
 from utils.helper import abort_if_false
 from utils.constants import DELEGATION_PERIOD_OPTIONS
@@ -111,11 +112,37 @@ def _retrieve(pk_file):
     )
 
 
+@escrow.command('retrieve-after-termination', help='')
+@click.option(
+    '--address',
+    help=TEXTS['retrieve_after_termination']['address']['help'],
+    prompt=TEXTS['retrieve_after_termination']['address']['prompt']
+)
+@click.option(
+    '--beneficiary-address',
+    help=TEXTS['retrieve_after_termination']['beneficiary_address']['help']
+)
+@click.option(
+    '--pk-file',
+    help=G_TEXTS['pk_file']['help']
+)
+def _retrieve_after_termination(address, beneficiary_address, pk_file):
+    retrieve_after_termination(
+        address=address,
+        beneficiary_address=beneficiary_address,
+        pk_file=pk_file
+    )
+
+
 @escrow.command('withdraw-bounty', help=TEXTS['withdraw_bounty']['help'])
 @click.argument('validator_id')
 @click.option(
     '--recipient-address',
     help=TEXTS['withdraw_bounty']['recipient_address']['help']
+)
+@click.option(
+    '--beneficiary-address',
+    help=TEXTS['withdraw_bounty']['beneficiary_address']['help']
 )
 @click.option(
     '--pk-file',
@@ -124,5 +151,18 @@ def _retrieve(pk_file):
 @click.option('--yes', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt=TEXTS['withdraw_bounty']['confirm'])
-def _withdraw_bounty(validator_id, recipient_address, pk_file):
-    withdraw_bounty(int(validator_id), recipient_address, pk_file)
+def _withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_file):
+    withdraw_bounty(int(validator_id), recipient_address, beneficiary_address, pk_file)
+
+
+@escrow.command('cancel-delegation', help=TEXTS['cancel_delegation']['help'])
+@click.argument('delegation_id')
+@click.option(
+    '--pk-file',
+    help=G_TEXTS['pk_file']['help']
+)
+def _cancel_delegation(delegation_id, pk_file):
+    cancel_pending_delegation(
+        delegation_id=int(delegation_id),
+        pk_file=pk_file
+    )

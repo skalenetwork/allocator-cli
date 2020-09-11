@@ -124,6 +124,23 @@ Optional arguments:
 -   `--recipient-address` - Address of the recipient. Defaults to the sender.  
 -   `--pk-file` - Path to file with private key (only for `software` wallet type)
 -   `--yes` - Confirmation flag
+- `--beneficiary-address` - Address of the beneficiary with Escrow contract
+
+#### Cancel pending delegation
+
+Cancel pending delegation request
+
+```bash
+sk-alloc escrow cancel-delegation [DELEGATION_ID]
+```
+
+Required params:
+
+1) Delegation ID - ID of the delegation to cancel
+
+Optional arguments:
+
+- `--pk-file` - Path to file with private key (only for `software` wallet type)
 
 ### SGX commands
 

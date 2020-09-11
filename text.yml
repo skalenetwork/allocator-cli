@@ -53,8 +53,18 @@ escrow:
     help: Withdraw earned bounty to specified address
     recipient_address:
       help: Address of the recipient. Defaults to the sender.
+    beneficiary_address:
+      help: Provide custom beneficiary address to init Escrow
     confirm: |-
       Are you sure you want to withdraw bounty?
+  retrieve_after_termination:
+    beneficiary_address:
+      help: Provide custom beneficiary address to init Escrow
+    address:
+      help: Destination address
+      prompt: Please enter destination address
+  cancel_delegation:
+    help: Cancel pending delegation request
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)

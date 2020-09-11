@@ -88,17 +88,40 @@ def retrieve(pk_file: str) -> None:
         sp.write("✔ Successfully retrieved tokens")
 
 
-def withdraw_bounty(validator_id, recipient_address, pk_file):
+def retrieve_after_termination(address: str, beneficiary_address: str, pk_file: str) -> None:
+    skale = init_skale_w_wallet_from_config(pk_file)
+    if not skale:
+        return
+    with yaspin(text='Retrieving tokens after termination', color=SPIN_COLOR) as sp:
+        if not beneficiary_address:
+            beneficiary_address = skale.wallet.address
+        tx_res = skale.escrow.retrieve_after_termination(
+            address=address,
+            beneficiary_address=beneficiary_address,
+            wait_for=True,
+            raise_for_status=False,
+        )
+        try:
+            tx_res.raise_for_status()
+        except TransactionError as err:
+            sp.write(str(err))
+            return
+        sp.write("✔ Successfully retrieved tokens")
+
+
+def withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_file):
     skale = init_skale_w_wallet_from_config(pk_file)
     if not skale:
         return
     if not recipient_address:
         recipient_address = skale.wallet.address
+    if not beneficiary_address:
+        beneficiary_address = skale.wallet.address
     with yaspin(text='Withdrawing bounty', color=SPIN_COLOR) as sp:
         tx_res = skale.escrow.withdraw_bounty(
             validator_id=validator_id,
             to=recipient_address,
-            beneficiary_address=skale.wallet.address,
+            beneficiary_address=beneficiary_address,
             raise_for_status=False,
             wait_for=True
         )
@@ -108,3 +131,21 @@ def withdraw_bounty(validator_id, recipient_address, pk_file):
             sp.write(str(err))
             return
         sp.write(f'✔ Bounty successfully transferred to {recipient_address}')
+
+
+def cancel_pending_delegation(delegation_id: int, pk_file: str) -> None:
+    skale = init_skale_w_wallet_from_config(pk_file)
+    if not skale:
+        return
+    with yaspin(text='Canceling delegation request', color=SPIN_COLOR) as sp:
+        tx_res = skale.escrow.cancel_pending_delegation(
+            delegation_id=delegation_id,
+            beneficiary_address=skale.wallet.address,
+            raise_for_status=False
+        )
+        try:
+            tx_res.raise_for_status()
+        except TransactionError as err:
+            sp.write(str(err))
+            return
+        sp.write("✔ Delegation request canceled")
