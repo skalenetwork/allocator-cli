@@ -7,7 +7,7 @@ from skale.utils.contracts_provision.allocator import connect_test_beneficiary
 
 from cli.escrow import (
     _delegate, _undelegate, _retrieve, _withdraw_bounty, _cancel_delegation,
-    _retrieve_after_termination
+    _retrieve_after_termination, _info, _plan_info
 )
 from utils.helper import to_wei
 from tests.constants import (TEST_PK_FILE, SECOND_TEST_PK_FILE, D_VALIDATOR_ID, D_DELEGATION_AMOUNT,
@@ -234,3 +234,45 @@ def test_cancel_delegation(runner, skale_manager):
     assert delegations[-1]['status'] == 'CANCELED'
     assert result.exit_code == 0
     _skip_evm_time(skale_manager.web3, MONTH_IN_SECONDS)
+
+
+def test_info(runner, skale_allocator_beneficiary):
+    result = runner.invoke(
+        _info,
+        [
+            skale_allocator_beneficiary.wallet.address
+        ]
+    )
+    output_list = result.output.splitlines()
+    escrow_address = skale_allocator_beneficiary.allocator.get_escrow_address(
+        skale_allocator_beneficiary.wallet.address
+    )
+
+    assert f'\x1b(0x\x1b(B Beneficiary address \x1b(0x\x1b(B {skale_allocator_beneficiary.wallet.address} \x1b(0x\x1b(B' in output_list # noqa
+    assert f'\x1b(0x\x1b(B Escrow address      \x1b(0x\x1b(B {escrow_address} \x1b(0x\x1b(B' in output_list  # noqa
+    assert '\x1b(0x\x1b(B Status              \x1b(0x\x1b(B ACTIVE                                     \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Plan ID             \x1b(0x\x1b(B 1                                          \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Start month         \x1b(0x\x1b(B 8                                          \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Full amount         \x1b(0x\x1b(B 5000                                       \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Amount after lockup \x1b(0x\x1b(B 1000                                       \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Finish vesting time \x1b(0x\x1b(B 01.09.2023                                 \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Lockup period end   \x1b(0x\x1b(B 01.03.2021                                 \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting active      \x1b(0x\x1b(B True                                       \x1b(0x\x1b(B' in output_list # noqa
+
+
+def test_plan_info(runner, skale_allocator_beneficiary):
+    result = runner.invoke(
+        _plan_info,
+        [
+            '1'
+        ]
+    )
+    output_list = result.output.splitlines()
+
+    assert '\x1b(0x\x1b(B Plan ID                    \x1b(0x\x1b(B 1    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Total vesting duration     \x1b(0x\x1b(B 36   \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting cliff              \x1b(0x\x1b(B 6    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting interval time unit \x1b(0x\x1b(B 1    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting interval           \x1b(0x\x1b(B 6    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Is delegation allowed      \x1b(0x\x1b(B True \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Is terminatable            \x1b(0x\x1b(B True \x1b(0x\x1b(B' in output_list # noqa

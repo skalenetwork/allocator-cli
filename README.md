@@ -142,6 +142,30 @@ Optional arguments:
 
 - `--pk-file` - Path to file with private key (only for `software` wallet type)
 
+#### Beneficiary info
+
+Info about beneficiary by address
+
+```bash
+sk-alloc escrow info [ADDRESS]
+```
+
+Required params:
+
+1) Address - address of the beneficiary with Escrow
+
+#### Plan info
+
+Info about plan by ID
+
+```bash
+sk-alloc escrow info [PLAN_ID]
+```
+
+Required params:
+
+1) Plan ID - ID of the plan to show
+
 ### SGX commands
 
 > Note: SGX wallet is not ready for production use yet.

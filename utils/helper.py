@@ -20,12 +20,17 @@
 import os
 import json
 import urllib
+import datetime
 import logging
 
 from web3 import Web3
-from utils.constants import (SKALE_ALLOCATOR_CONFIG_FILE, SKALE_ALLOCATOR_ABI_FILE,
-                             PERMILLE_MULTIPLIER)
 
+from utils.texts import Texts
+from utils.constants import (SKALE_ALLOCATOR_CONFIG_FILE, SKALE_ALLOCATOR_ABI_FILE,
+                             PERMILLE_MULTIPLIER, ZERO_ADDRESS)
+
+
+G_TEXTS = Texts()
 logger = logging.getLogger(__name__)
 
 
@@ -91,3 +96,16 @@ def permille_to_percent(val):
 
 def percent_to_permille(val):
     return int(val * PERMILLE_MULTIPLIER)
+
+
+def escrow_exists(skale, address):
+    return skale.allocator.get_escrow_address(address) != ZERO_ADDRESS
+
+
+def print_no_escrow_msg(address):
+    print(f'\n{G_TEXTS["no_escrow"]}: {address}')
+
+
+def convert_timestamp(timestamp):
+    dt = datetime.datetime.fromtimestamp(timestamp)
+    return dt.strftime('%d.%m.%Y')

@@ -19,8 +19,8 @@
 
 import click
 
-from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty,
-                         cancel_pending_delegation, retrieve_after_termination)
+from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty, plan_info,
+                         cancel_pending_delegation, retrieve_after_termination, info)
 
 from utils.helper import abort_if_false
 from utils.constants import DELEGATION_PERIOD_OPTIONS
@@ -112,7 +112,7 @@ def _retrieve(pk_file):
     )
 
 
-@escrow.command('retrieve-after-termination', help='')
+@escrow.command('retrieve-after-termination', hidden=True)
 @click.option(
     '--address',
     help=TEXTS['retrieve_after_termination']['address']['help'],
@@ -165,4 +165,22 @@ def _cancel_delegation(delegation_id, pk_file):
     cancel_pending_delegation(
         delegation_id=int(delegation_id),
         pk_file=pk_file
+    )
+
+
+@escrow.command('info', help=TEXTS['info']['help'])
+@click.argument('address')
+@click.option('--wei', '-w', is_flag=True, help=G_TEXTS['wei']['help'])
+def _info(address, wei):
+    info(
+        beneficiary_address=address,
+        wei=wei
+    )
+
+
+@escrow.command('plan-info', help=TEXTS['plan_info']['help'])
+@click.argument('plan_id')
+def _plan_info(plan_id):
+    plan_info(
+        plan_id=int(plan_id)
     )
