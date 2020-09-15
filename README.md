@@ -142,6 +142,18 @@ Optional arguments:
 
 - `--pk-file` - Path to file with private key (only for `software` wallet type)
 
+#### Beneficiary info
+
+Info about beneficiary by address
+
+```bash
+sk-alloc escrow info [ADDRESS]
+```
+
+Required params:
+
+1) Address - address of the beneficiary with Escrow
+
 ### SGX commands
 
 > Note: SGX wallet is not ready for production use yet.

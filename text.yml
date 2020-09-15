@@ -65,6 +65,8 @@ escrow:
       prompt: Please enter destination address
   cancel_delegation:
     help: Cancel pending delegation request
+  info:
+    help: Info about beneficiary by address
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)
@@ -72,3 +74,4 @@ yes_opt:
   prompt: Are you sure?
 wei:
   help: Show amount in wei
+no_escrow: Escrow contract for this beneficiary not found
