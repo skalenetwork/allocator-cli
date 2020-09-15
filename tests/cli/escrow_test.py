@@ -255,7 +255,6 @@ def test_info(runner, skale_allocator_beneficiary):
     assert '\x1b(0x\x1b(B Start month         \x1b(0x\x1b(B 8                                          \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Full amount         \x1b(0x\x1b(B 5000                                       \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Amount after lockup \x1b(0x\x1b(B 1000                                       \x1b(0x\x1b(B' in output_list # noqa
-    assert '\x1b(0x\x1b(B Vested amount       \x1b(0x\x1b(B 1800                                       \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Finish vesting time \x1b(0x\x1b(B 01.09.2023                                 \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Lockup period end   \x1b(0x\x1b(B 01.03.2021                                 \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Time of next vest   \x1b(0x\x1b(B 01.03.2022                                 \x1b(0x\x1b(B' in output_list # noqa
