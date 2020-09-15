@@ -227,3 +227,21 @@ def info(beneficiary_address: str, wei: bool) -> None:
         ['Vesting active', is_vesting_active]
     ])
     print(table.table)
+
+
+def plan_info(plan_id):
+    skale = init_skale_from_config()
+    if not skale:
+        return
+
+    plan = skale.allocator.get_plan(plan_id)
+    table = SingleTable([
+        ['Plan ID', plan_id],
+        ['Total vesting duration', plan['totalVestingDuration']],
+        ['Vesting cliff', plan['vestingCliff']],
+        ['Vesting interval time unit', plan['vestingIntervalTimeUnit']],
+        ['Vesting interval', plan['vestingInterval']],
+        ['Is delegation allowed', plan['isDelegationAllowed']],
+        ['Is terminatable', plan['isTerminatable']],
+    ])
+    print(table.table)

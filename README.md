@@ -154,6 +154,18 @@ Required params:
 
 1) Address - address of the beneficiary with Escrow
 
+#### Plan info
+
+Info about plan by ID
+
+```bash
+sk-alloc escrow info [PLAN_ID]
+```
+
+Required params:
+
+1) Plan ID - ID of the plan to show
+
 ### SGX commands
 
 > Note: SGX wallet is not ready for production use yet.

@@ -67,6 +67,8 @@ escrow:
     help: Cancel pending delegation request
   info:
     help: Info about beneficiary by address
+  plan_info:
+    help: Info about beneficiary plan
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)

@@ -19,7 +19,7 @@
 
 import click
 
-from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty,
+from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty, plan_info,
                          cancel_pending_delegation, retrieve_after_termination, info)
 
 from utils.helper import abort_if_false
@@ -175,4 +175,12 @@ def _info(address, wei):
     info(
         beneficiary_address=address,
         wei=wei
+    )
+
+
+@escrow.command('plan-info', help=TEXTS['plan_info']['help'])
+@click.argument('plan_id')
+def _plan_info(plan_id):
+    plan_info(
+        plan_id=int(plan_id)
     )
