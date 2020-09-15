@@ -35,11 +35,13 @@ D_DELEGATION_PERIOD = 3
 
 def delegate(validator_id, amount, delegation_period, info, pk_file):
     skale = init_skale_w_wallet_from_config(pk_file)
+
     if not skale:
         return
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
+
     with yaspin(text='Sending delegation request', color=SPIN_COLOR) as sp:
         amount_wei = to_wei(amount)
         tx_res = skale.escrow.delegate(
@@ -49,9 +51,7 @@ def delegate(validator_id, amount, delegation_period, info, pk_file):
             info=info,
             beneficiary_address=skale.wallet.address,
             wait_for=True,
-            raise_for_status=False,
-            skip_dry_run=True,
-            gas_limit=1000000
+            raise_for_status=False
         )
         try:
             tx_res.raise_for_status()
@@ -63,8 +63,13 @@ def delegate(validator_id, amount, delegation_period, info, pk_file):
 
 def undelegate(delegation_id: int, pk_file: str) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
+
     if not skale:
         return
+    if not escrow_exists(skale, skale.wallet.address):
+        print_no_escrow_msg(skale.wallet.address)
+        return
+
     with yaspin(text='Requesting undelegation', color=SPIN_COLOR) as sp:
         tx_res = skale.escrow.request_undelegation(
             delegation_id=delegation_id,
@@ -82,8 +87,13 @@ def undelegate(delegation_id: int, pk_file: str) -> None:
 
 def retrieve(pk_file: str) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
+
     if not skale:
         return
+    if not escrow_exists(skale, skale.wallet.address):
+        print_no_escrow_msg(skale.wallet.address)
+        return
+
     with yaspin(text='Retrieving tokens', color=SPIN_COLOR) as sp:
         tx_res = skale.escrow.retrieve(
             beneficiary_address=skale.wallet.address,
@@ -105,6 +115,9 @@ def retrieve_after_termination(address: str, beneficiary_address: str, pk_file: 
     with yaspin(text='Retrieving tokens after termination', color=SPIN_COLOR) as sp:
         if not beneficiary_address:
             beneficiary_address = skale.wallet.address
+        if not escrow_exists(skale, beneficiary_address):
+            print_no_escrow_msg(beneficiary_address)
+            return
         tx_res = skale.escrow.retrieve_after_termination(
             address=address,
             beneficiary_address=beneficiary_address,
@@ -121,12 +134,17 @@ def retrieve_after_termination(address: str, beneficiary_address: str, pk_file: 
 
 def withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_file):
     skale = init_skale_w_wallet_from_config(pk_file)
+
     if not skale:
         return
     if not recipient_address:
         recipient_address = skale.wallet.address
     if not beneficiary_address:
         beneficiary_address = skale.wallet.address
+    if not escrow_exists(skale, beneficiary_address):
+        print_no_escrow_msg(beneficiary_address)
+        return
+
     with yaspin(text='Withdrawing bounty', color=SPIN_COLOR) as sp:
         tx_res = skale.escrow.withdraw_bounty(
             validator_id=validator_id,
@@ -145,8 +163,13 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_fil
 
 def cancel_pending_delegation(delegation_id: int, pk_file: str) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
+
     if not skale:
         return
+    if not escrow_exists(skale, skale.wallet.address):
+        print_no_escrow_msg(skale.wallet.address)
+        return
+
     with yaspin(text='Canceling delegation request', color=SPIN_COLOR) as sp:
         tx_res = skale.escrow.cancel_pending_delegation(
             delegation_id=delegation_id,
@@ -168,7 +191,7 @@ def info(beneficiary_address: str, wei: bool) -> None:
     if not skale:
         return
     if not escrow_exists(skale, address_fx):
-        print_no_escrow_msg(skale.wallet.address)
+        print_no_escrow_msg(address_fx)
         return
 
     plan_params = skale.allocator.get_beneficiary_plan_params(address_fx)
