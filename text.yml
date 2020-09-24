@@ -77,3 +77,24 @@ yes_opt:
 wei:
   help: Show amount in wei
 no_escrow: Escrow contract for this beneficiary not found
+address_index:
+  help: Index of the address to use (only for `ledger` wallet type)
+  prompt: Please enter the address index (staring from 0)
+
+wallet:
+  help: Wallet commands
+  send_eth:
+    help: Send ETH tokens to address
+    confirm: |-
+      Are you sure you want to send ETH?
+      Please, re-check all values above before confirming.
+  send_skl:
+    help: Send SKL tokens to address
+    confirm: |-
+      Are you sure you want to send SKL?
+      Please, re-check all values above before confirming.
+  setup_ledger:
+    help: Configure Ledger device account
+    keys_type:
+      help: Type of the Ledger keys (live or legacy)
+      prompt: Enter type of the Ledger keys (live or legacy)
