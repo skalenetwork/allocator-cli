@@ -27,7 +27,7 @@ from web3 import Web3
 
 from utils.texts import Texts
 from utils.constants import (SKALE_ALLOCATOR_CONFIG_FILE, SKALE_ALLOCATOR_ABI_FILE,
-                             PERMILLE_MULTIPLIER, ZERO_ADDRESS)
+                             PERMILLE_MULTIPLIER, ZERO_ADDRESS, DEBUG_LOG_FILEPATH)
 
 
 G_TEXTS = Texts()
@@ -107,5 +107,9 @@ def print_no_escrow_msg(address):
 
 
 def convert_timestamp(timestamp):
-    dt = datetime.datetime.fromtimestamp(timestamp)
+    dt = datetime.datetime.utcfromtimestamp(int(timestamp))
     return dt.strftime('%d.%m.%Y')
+
+
+def print_err_with_log_path(e=''):
+    print(e, f'\nPlease check logs: {DEBUG_LOG_FILEPATH}')

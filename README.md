@@ -166,6 +166,69 @@ Required params:
 
 1) Plan ID - ID of the plan to show
 
+### Wallet commands
+
+#### Setup Ledger
+
+This command works only if you're using the Ledger wallet
+
+```bash
+sk-val wallet setup-ledger
+```
+
+Required params:
+
+-   `--address-index` - Index of the address to use (starting from `0`)
+-   `--keys-type` - Type of the Ledger keys (live or legacy)
+
+#### Send ETH tokens
+
+Send ETH tokens to specific address
+
+```bash
+sk-val wallet send-eth [ADDRESS] [AMOUNT]
+```
+
+Required arguments:
+
+1) ADDRESS - Ethereum receiver address
+2) AMOUNT - Amount of ETH tokens to send
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+-   `--yes` - Confirmation flag
+
+Usage example:
+
+```bash
+sk-val wallet send-eth 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
+```
+
+#### Send SKL tokens
+
+Send SKL tokens to specific address
+
+```bash
+sk-val wallet send-skl [ADDRESS] [AMOUNT]
+```
+
+Required arguments:
+
+1) ADDRESS - Ethereum receiver address
+2) AMOUNT - Amount of SKL tokens to send
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+-   `--yes` - Confirmation flag
+
+Usage example:
+
+```bash
+sk-val wallet send-skl 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
+```
+
 ### SGX commands
 
 > Note: SGX wallet is not ready for production use yet.
