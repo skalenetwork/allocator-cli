@@ -22,7 +22,7 @@ import sys
 import logging
 
 from yaspin import yaspin
-from skale import SkaleAllocator
+from skale import SkaleAllocator, SkaleManager
 
 from skale.utils.web3_utils import init_web3
 from skale.wallets import LedgerWallet, SgxWallet, Web3Wallet
@@ -44,6 +44,16 @@ def init_skale(endpoint, wallet=None, disable_spin=DISABLE_SPIN):
     with yaspin(text="Loading", color=SPIN_COLOR) as sp:
         sp.text = 'Connecting to SKALE Allocator contracts'
         skale = SkaleAllocator(endpoint, SKALE_ALLOCATOR_ABI_FILE, wallet)
+        return skale
+
+
+def init_skale_manager(endpoint, wallet=None, disable_spin=DISABLE_SPIN):
+    """Init read-only instance of SKALE Manager library"""
+    if disable_spin:
+        return SkaleManager(endpoint, SKALE_ALLOCATOR_ABI_FILE, wallet)
+    with yaspin(text="Loading", color=SPIN_COLOR) as sp:
+        sp.text = 'Connecting to SKALE Manager contracts'
+        skale = SkaleManager(endpoint, SKALE_ALLOCATOR_ABI_FILE, wallet)
         return skale
 
 
@@ -78,6 +88,14 @@ def init_skale_from_config():
         print('You should run < init > first')
         return
     return init_skale(config['endpoint'])
+
+
+def init_skale_manager_from_config():
+    config = get_config()
+    if not config:
+        print('You should run < init > first')
+        return
+    return init_skale_manager(config['endpoint'])
 
 
 def init_skale_w_wallet_from_config(pk_file=None):

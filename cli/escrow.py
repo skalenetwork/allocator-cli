@@ -20,7 +20,8 @@
 import click
 
 from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty, plan_info,
-                         cancel_pending_delegation, retrieve_after_termination, info)
+                         cancel_pending_delegation, retrieve_after_termination, info, delegations,
+                         validators_list)
 
 from utils.helper import abort_if_false
 from utils.constants import DELEGATION_PERIOD_OPTIONS
@@ -184,3 +185,17 @@ def _plan_info(plan_id):
     plan_info(
         plan_id=int(plan_id)
     )
+
+
+@escrow.command('delegations', help=TEXTS['delegations']['help'])
+@click.argument('address')
+@click.option('--wei', '-w', is_flag=True, help=TEXTS['delegations']['wei']['help'])
+def _delegations(address, wei):
+    delegations(address, wei)
+
+
+@escrow.command('validators', help=TEXTS['validators']['help'])
+@click.option('--wei', '-w', is_flag=True, help=TEXTS['validators']['wei']['help'])
+@click.option('--all', is_flag=True)
+def _validators(wei, all):
+    validators_list(wei, all)

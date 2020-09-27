@@ -22,9 +22,12 @@ from terminaltables import SingleTable
 
 from web3 import Web3
 from skale.transactions.result import TransactionError
+from skale.utils.web3_utils import to_checksum_address
 
-from utils.web3_utils import init_skale_w_wallet_from_config, init_skale_from_config
+from utils.web3_utils import (init_skale_w_wallet_from_config, init_skale_from_config,
+                              init_skale_manager_from_config)
 from utils.helper import to_wei, from_wei, escrow_exists, print_no_escrow_msg, convert_timestamp
+from utils.print_formatters import print_delegations, print_validators
 from utils.constants import SPIN_COLOR
 from utils.texts import Texts
 
@@ -245,3 +248,28 @@ def plan_info(plan_id):
         ['Is terminatable', plan['isTerminatable']],
     ])
     print(table.table)
+
+
+def delegations(address, wei):
+    # todo: get escrow address
+    checksum_address = to_checksum_address(address)
+    skale_manager = init_skale_manager_from_config()
+    skale = init_skale_from_config()
+    if not skale:
+        return
+
+    escrow_address = skale.allocator.get_escrow_address(checksum_address)
+    delegations_list = skale_manager.delegation_controller.get_all_delegations_by_holder(
+        escrow_address
+    )
+    print(f'Delegations for address {address} (Escrow: {escrow_address}):\n')
+    print_delegations(delegations_list, wei)
+
+
+def validators_list(wei, all):
+    skale = init_skale_manager_from_config()
+    if not all:
+        validators = skale.validator_service.ls(trusted_only=True)
+    else:
+        validators = skale.validator_service.ls()
+    print_validators(validators, wei)

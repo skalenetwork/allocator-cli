@@ -18,7 +18,7 @@ TEST_ETH_TRANSFER_AMOUNT = 0.5
 # test abi
 
 TEST_SKALE_MANAGER_ABI_PATH = os.path.join(PROJECT_DIR, 'helper-scripts', 'contracts_data',
-                                           'unique.json')
+                                           'universal.json')
 
 # validator
 

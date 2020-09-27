@@ -69,6 +69,14 @@ escrow:
     help: Info about beneficiary by address
   plan_info:
     help: Info about beneficiary plan
+  delegations:
+    help: List of delegations for address
+    wei:
+      help: Show delegation amount in wei
+  validators:
+    help: List of available validators
+    wei:
+      help: Show delegation amount in wei
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)
