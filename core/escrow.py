@@ -251,7 +251,6 @@ def plan_info(plan_id):
 
 
 def delegations(address, wei):
-    # todo: get escrow address
     checksum_address = to_checksum_address(address)
     skale_manager = init_skale_manager_from_config()
     skale = init_skale_from_config()
