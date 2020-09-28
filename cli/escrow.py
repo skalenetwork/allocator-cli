@@ -23,7 +23,7 @@ from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty, plan_i
                          cancel_pending_delegation, retrieve_after_termination, info, delegations,
                          validators_list)
 
-from utils.helper import abort_if_false
+from utils.helper import abort_if_false, to_wei
 from utils.constants import DELEGATION_PERIOD_OPTIONS
 from utils.validations import EthAddressType, UrlType, FloatPercentageType
 from utils.texts import Texts
@@ -76,16 +76,23 @@ def escrow():
     '--pk-file',
     help=G_TEXTS['pk_file']['help']
 )
+@click.option(
+    '--gas-price',
+    type=float,
+    help=G_TEXTS['gas_price']['help']
+)
 @click.option('--yes', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt=TEXTS['delegate']['confirm'])
-def _delegate(validator_id, amount, delegation_period, info, pk_file):
+def _delegate(validator_id, amount, delegation_period, info, pk_file,
+              gas_price):
     delegate(
         validator_id=validator_id,
         amount=amount,
         delegation_period=int(delegation_period),
         info=info,
-        pk_file=pk_file
+        pk_file=pk_file,
+        gas_price=to_wei(gas_price, 'gwei')
     )
 
 
@@ -95,10 +102,16 @@ def _delegate(validator_id, amount, delegation_period, info, pk_file):
     '--pk-file',
     help=G_TEXTS['pk_file']['help']
 )
-def _undelegate(delegation_id, pk_file):
+@click.option(
+    '--gas-price',
+    type=float,
+    help=G_TEXTS['gas_price']['help']
+)
+def _undelegate(delegation_id, pk_file, gas_price):
     undelegate(
         delegation_id=int(delegation_id),
-        pk_file=pk_file
+        pk_file=pk_file,
+        gas_price=to_wei(gas_price, 'gwei')
     )
 
 
@@ -107,9 +120,15 @@ def _undelegate(delegation_id, pk_file):
     '--pk-file',
     help=G_TEXTS['pk_file']['help']
 )
-def _retrieve(pk_file):
+@click.option(
+    '--gas-price',
+    type=float,
+    help=G_TEXTS['gas_price']['help']
+)
+def _retrieve(pk_file, gas_price):
     retrieve(
-        pk_file=pk_file
+        pk_file=pk_file,
+        gas_price=to_wei(gas_price, 'gwei')
     )
 
 
@@ -127,11 +146,18 @@ def _retrieve(pk_file):
     '--pk-file',
     help=G_TEXTS['pk_file']['help']
 )
-def _retrieve_after_termination(address, beneficiary_address, pk_file):
+@click.option(
+    '--gas-price',
+    type=float,
+    help=G_TEXTS['gas_price']['help']
+)
+def _retrieve_after_termination(address, beneficiary_address, pk_file,
+                                gas_price):
     retrieve_after_termination(
         address=address,
         beneficiary_address=beneficiary_address,
-        pk_file=pk_file
+        pk_file=pk_file,
+        gas_price=to_wei(gas_price, 'gwei')
     )
 
 
@@ -149,11 +175,21 @@ def _retrieve_after_termination(address, beneficiary_address, pk_file):
     '--pk-file',
     help=G_TEXTS['pk_file']['help']
 )
+@click.option(
+    '--gas-price',
+    type=float,
+    help=G_TEXTS['gas_price']['help']
+)
 @click.option('--yes', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt=TEXTS['withdraw_bounty']['confirm'])
-def _withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_file):
-    withdraw_bounty(int(validator_id), recipient_address, beneficiary_address, pk_file)
+def _withdraw_bounty(validator_id, recipient_address, beneficiary_address,
+                     pk_file, gas_price):
+    withdraw_bounty(
+        int(validator_id), recipient_address, beneficiary_address,
+        pk_file=pk_file,
+        gas_price=to_wei(gas_price, 'gwei')
+    )
 
 
 @escrow.command('cancel-delegation', help=TEXTS['cancel_delegation']['help'])
@@ -162,10 +198,16 @@ def _withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_fi
     '--pk-file',
     help=G_TEXTS['pk_file']['help']
 )
-def _cancel_delegation(delegation_id, pk_file):
+@click.option(
+    '--gas-price',
+    type=float,
+    help=G_TEXTS['gas_price']['help']
+)
+def _cancel_delegation(delegation_id, pk_file, gas_price):
     cancel_pending_delegation(
         delegation_id=int(delegation_id),
-        pk_file=pk_file
+        pk_file=pk_file,
+        gas_price=to_wei(gas_price, 'gwei')
     )
 
 

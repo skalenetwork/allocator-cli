@@ -36,7 +36,7 @@ G_TEXTS = Texts()
 D_DELEGATION_PERIOD = 3
 
 
-def delegate(validator_id, amount, delegation_period, info, pk_file):
+def delegate(validator_id, amount, delegation_period, info, pk_file, gas_price):
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
@@ -54,6 +54,7 @@ def delegate(validator_id, amount, delegation_period, info, pk_file):
             info=info,
             beneficiary_address=skale.wallet.address,
             wait_for=True,
+            gas_price=gas_price,
             raise_for_status=False
         )
         try:
@@ -64,7 +65,7 @@ def delegate(validator_id, amount, delegation_period, info, pk_file):
         sp.write("✔ Delegation request sent")
 
 
-def undelegate(delegation_id: int, pk_file: str) -> None:
+def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
@@ -78,7 +79,8 @@ def undelegate(delegation_id: int, pk_file: str) -> None:
             delegation_id=delegation_id,
             beneficiary_address=skale.wallet.address,
             wait_for=True,
-            raise_for_status=False,
+            gas_price=gas_price,
+            raise_for_status=False
         )
         try:
             tx_res.raise_for_status()
@@ -88,7 +90,7 @@ def undelegate(delegation_id: int, pk_file: str) -> None:
         sp.write("✔ Successfully undelegated")
 
 
-def retrieve(pk_file: str) -> None:
+def retrieve(pk_file: str, gas_price: int) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
@@ -101,6 +103,7 @@ def retrieve(pk_file: str) -> None:
         tx_res = skale.escrow.retrieve(
             beneficiary_address=skale.wallet.address,
             wait_for=True,
+            gas_price=gas_price,
             raise_for_status=False,
         )
         try:
@@ -111,7 +114,8 @@ def retrieve(pk_file: str) -> None:
         sp.write("✔ Successfully retrieved tokens")
 
 
-def retrieve_after_termination(address: str, beneficiary_address: str, pk_file: str) -> None:
+def retrieve_after_termination(address: str, beneficiary_address: str,
+                               pk_file: str, gas_price: int) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
     if not skale:
         return
@@ -125,7 +129,8 @@ def retrieve_after_termination(address: str, beneficiary_address: str, pk_file: 
             address=address,
             beneficiary_address=beneficiary_address,
             wait_for=True,
-            raise_for_status=False,
+            gas_price=gas_price,
+            raise_for_status=False
         )
         try:
             tx_res.raise_for_status()
@@ -135,7 +140,8 @@ def retrieve_after_termination(address: str, beneficiary_address: str, pk_file: 
         sp.write("✔ Successfully retrieved tokens")
 
 
-def withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_file):
+def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
+                    pk_file, gas_price: int):
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
@@ -154,6 +160,7 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_fil
             to=recipient_address,
             beneficiary_address=beneficiary_address,
             raise_for_status=False,
+            gas_price=gas_price,
             wait_for=True
         )
         try:
@@ -164,7 +171,8 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address, pk_fil
         sp.write(f'✔ Bounty successfully transferred to {recipient_address}')
 
 
-def cancel_pending_delegation(delegation_id: int, pk_file: str) -> None:
+def cancel_pending_delegation(delegation_id: int, pk_file: str,
+                              gas_price: int) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
@@ -177,6 +185,7 @@ def cancel_pending_delegation(delegation_id: int, pk_file: str) -> None:
         tx_res = skale.escrow.cancel_pending_delegation(
             delegation_id=delegation_id,
             beneficiary_address=skale.wallet.address,
+            gas_price=gas_price,
             raise_for_status=False
         )
         try:
