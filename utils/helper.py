@@ -20,12 +20,18 @@
 import os
 import json
 import urllib
+import datetime
 import logging
+from decimal import Decimal
 
 from web3 import Web3
-from utils.constants import (SKALE_ALLOCATOR_CONFIG_FILE, SKALE_ALLOCATOR_ABI_FILE,
-                             PERMILLE_MULTIPLIER)
 
+from utils.texts import Texts
+from utils.constants import (SKALE_ALLOCATOR_CONFIG_FILE, SKALE_ALLOCATOR_ABI_FILE,
+                             PERMILLE_MULTIPLIER, ZERO_ADDRESS, DEBUG_LOG_FILEPATH)
+
+
+G_TEXTS = Texts()
 logger = logging.getLogger(__name__)
 
 
@@ -73,16 +79,22 @@ def abort_if_false(ctx, param, value):
         ctx.abort()
 
 
-def to_skl(wei):  # todo: replace with from_wei()
-    return Web3.fromWei(wei, 'ether')
+def to_skl(wei, unit='ether'):  # todo: replace with from_wei()
+    if wei is None:
+        return None
+    return Web3.fromWei(Decimal(wei), unit)
 
 
-def from_wei(val):
-    return Web3.fromWei(val, 'ether')
+def from_wei(val, unit='ether'):
+    if val is None:
+        return None
+    return Web3.fromWei(Decimal(val), unit)
 
 
-def to_wei(val):
-    return Web3.toWei(val, 'ether')
+def to_wei(val, unit='ether'):
+    if val is None:
+        return None
+    return Web3.toWei(Decimal(val), unit)
 
 
 def permille_to_percent(val):
@@ -91,3 +103,20 @@ def permille_to_percent(val):
 
 def percent_to_permille(val):
     return int(val * PERMILLE_MULTIPLIER)
+
+
+def escrow_exists(skale, address):
+    return skale.allocator.get_escrow_address(address) != ZERO_ADDRESS
+
+
+def print_no_escrow_msg(address):
+    print(f'\n{G_TEXTS["no_escrow"]}: {address}')
+
+
+def convert_timestamp(timestamp):
+    dt = datetime.datetime.utcfromtimestamp(int(timestamp))
+    return dt.strftime('%d.%m.%Y')
+
+
+def print_err_with_log_path(e=''):
+    print(e, f'\nPlease check logs: {DEBUG_LOG_FILEPATH}')

@@ -21,7 +21,7 @@
 -   Download executable
 
 ```bash
-VERSION_NUM={put the version number here} && sudo -E bash -c 'curl -L "https://github.com/skalenetwork/allocator-cli/releases/download/$VERSION_NUM/sk-alloc-$VERSION_NUM-`uname -s`-`uname -m`" >  /usr/local/bin/sk-alloc'
+VERSION_NUM={put the version number here} && sudo -E bash -c "curl -L https://github.com/skalenetwork/allocator-cli/releases/download/$VERSION_NUM/sk-alloc-$VERSION_NUM-`uname -s`-`uname -m` >  /usr/local/bin/sk-alloc"
 ```
 
 -  Apply executable permissions to the binary:
@@ -124,8 +124,142 @@ Optional arguments:
 -   `--recipient-address` - Address of the recipient. Defaults to the sender.  
 -   `--pk-file` - Path to file with private key (only for `software` wallet type)
 -   `--yes` - Confirmation flag
+- `--beneficiary-address` - Address of the beneficiary with Escrow contract
+
+#### Cancel pending delegation
+
+Cancel pending delegation request
+
+```bash
+sk-alloc escrow cancel-delegation [DELEGATION_ID]
+```
+
+Required params:
+
+1) Delegation ID - ID of the delegation to cancel
+
+Optional arguments:
+
+- `--pk-file` - Path to file with private key (only for `software` wallet type)
+
+#### Beneficiary info
+
+Info about beneficiary by address
+
+```bash
+sk-alloc escrow info [ADDRESS]
+```
+
+Required params:
+
+1) Address - address of the beneficiary with Escrow
+
+#### Plan info
+
+Info about plan by ID
+
+```bash
+sk-alloc escrow info [PLAN_ID]
+```
+
+Required params:
+
+1) Plan ID - ID of the plan to show
+
+#### List
+
+List of available validators
+
+```bash
+sk-alloc escrow validators
+```
+
+Options:
+
+-   `--wei/-w` - Show tokens amount in wei
+
+#### Delegations
+
+List of delegations for address
+
+```bash
+sk-alloc escrow delegations [ADDRESS]
+```
+
+Required arguments:
+
+1) ADDRESS - Ethereum address of the token holder
+
+Options:
+
+-   `--wei/-w` - Show tokens amount in wei
+
+### Wallet commands
+
+#### Setup Ledger
+
+This command works only if you're using the Ledger wallet
+
+```bash
+sk-alloc wallet setup-ledger
+```
+
+Required params:
+
+-   `--address-index` - Index of the address to use (starting from `0`)
+-   `--keys-type` - Type of the Ledger keys (live or legacy)
+
+#### Send ETH tokens
+
+Send ETH tokens to specific address
+
+```bash
+sk-alloc wallet send-eth [ADDRESS] [AMOUNT]
+```
+
+Required arguments:
+
+1) ADDRESS - Ethereum receiver address
+2) AMOUNT - Amount of ETH tokens to send
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+-   `--yes` - Confirmation flag
+
+Usage example:
+
+```bash
+sk-alloc wallet send-eth 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
+```
+
+#### Send SKL tokens
+
+Send SKL tokens to specific address
+
+```bash
+sk-alloc wallet send-skl [ADDRESS] [AMOUNT]
+```
+
+Required arguments:
+
+1) ADDRESS - Ethereum receiver address
+2) AMOUNT - Amount of SKL tokens to send
+
+Optional arguments:
+
+-   `--pk-file` - Path to file with private key (only for `software` wallet type)
+-   `--yes` - Confirmation flag
+
+Usage example:
+
+```bash
+sk-alloc wallet send-skl 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
+```
 
 ### SGX commands
+
+> Note: SGX wallet is not ready for production use yet.
 
 #### Init 
  Initialize sgx wallet  

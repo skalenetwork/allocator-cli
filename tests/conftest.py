@@ -25,6 +25,12 @@ def skale_manager():
 
 
 @pytest.fixture
+def skale_allocator_vm():
+    '''Returns SKALE Allocator with vesting manager key'''
+    return init_skale_w_wallet_from_config(pk_file=TEST_PK_FILE)
+
+
+@pytest.fixture
 def skale_allocator_beneficiary():
     '''Returns SKALE Allocator with provider from config'''
     return init_skale_w_wallet_from_config(pk_file=SECOND_TEST_PK_FILE)
