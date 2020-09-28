@@ -2,13 +2,16 @@
 
 from skale.wallets.web3_wallet import generate_wallet
 from skale.utils.contracts_provision.main import _skip_evm_time
-from skale.utils.contracts_provision import MONTH_IN_SECONDS
+from skale.utils.contracts_provision import MONTH_IN_SECONDS, D_PLAN_ID
+from skale.utils.contracts_provision.allocator import connect_test_beneficiary
 
 from cli.escrow import (
-    _delegate, _undelegate, _retrieve, _withdraw_bounty
+    _delegate, _undelegate, _retrieve, _withdraw_bounty, _cancel_delegation,
+    _retrieve_after_termination, _info, _plan_info, _delegations, _validators
 )
 from utils.helper import to_wei
-from tests.constants import (SECOND_TEST_PK_FILE, D_VALIDATOR_ID, D_DELEGATION_AMOUNT,
+from tests.helper import check_validator_fields, convert_validators_info, str_contains
+from tests.constants import (TEST_PK_FILE, SECOND_TEST_PK_FILE, D_VALIDATOR_ID, D_DELEGATION_AMOUNT,
                              D_DELEGATION_PERIOD, D_DELEGATION_INFO, DELEGATION_AMOUNT_SKL)
 
 
@@ -25,6 +28,14 @@ def _delegate_via_escrow(skale_allocator_beneficiary):
         beneficiary_address=skale_allocator_beneficiary.wallet.address,
         wait_for=True
     )
+
+
+def _generate_and_terminate(skale_allocator_vm):
+    wallet = generate_wallet(skale_allocator_vm.web3)
+    connect_test_beneficiary(skale_allocator_vm, D_PLAN_ID, wallet)
+    skale_allocator_vm.allocator.start_vesting(wallet.address, wait_for=True)
+    skale_allocator_vm.allocator.stop_vesting(wallet.address)
+    return wallet
 
 
 def test_delegate(runner, skale_manager, beneficiary_escrow_address):
@@ -121,6 +132,23 @@ def test_retrieve(runner, skale_manager, skale_allocator_beneficiary):
     assert result.exit_code == 0
 
 
+def test_retrieve_after_termination(runner, skale_allocator_vm):
+    wallet = _generate_and_terminate(skale_allocator_vm)
+    result = runner.invoke(
+        _retrieve_after_termination,
+        [
+            '--address', skale_allocator_vm.wallet.address,
+            '--beneficiary-address', wallet.address,
+            '--pk-file', TEST_PK_FILE
+        ]
+    )
+
+    output_list = result.output.splitlines()
+    expected_output = '\x1b[K✔ Successfully retrieved tokens'
+    assert expected_output in output_list
+    assert result.exit_code == 0
+
+
 def test_withdraw_bounty_to_sender(runner, skale_allocator_beneficiary):
     _skip_evm_time(skale_allocator_beneficiary.web3, MONTH_IN_SECONDS * 3)
     result = runner.invoke(
@@ -153,4 +181,147 @@ def test_withdraw_bounty_to_custom_address(runner, skale_allocator_beneficiary):
     output_list = result.output.splitlines()
     expected_output = f'\x1b[K✔ Bounty successfully transferred to {recipient_address}'
     assert expected_output in output_list
+    assert result.exit_code == 0
+
+
+def test_withdraw_bounty_from_vesting_manager(runner, skale_allocator_vm):
+    wallet = _generate_and_terminate(skale_allocator_vm)
+    result = runner.invoke(
+        _withdraw_bounty,
+        [
+            str(D_VALIDATOR_ID),
+            '--beneficiary-address', wallet.address,
+            '--pk-file', TEST_PK_FILE,
+            '--yes'
+        ]
+    )
+    output_list = result.output.splitlines()
+    expected_output = f'\x1b[K✔ Bounty successfully transferred to {skale_allocator_vm.wallet.address}' # noqa
+    assert expected_output in output_list
+    assert result.exit_code == 0
+
+
+def test_cancel_delegation(runner, skale_manager):
+    result = runner.invoke(
+        _delegate,
+        [
+            '--validator-id', D_VALIDATOR_ID,
+            '--amount', DELEGATION_AMOUNT_SKL,
+            '--delegation-period', str(D_DELEGATION_PERIOD),
+            '--info', D_DELEGATION_INFO,
+            '--pk-file', SECOND_TEST_PK_FILE,
+            '--yes'
+        ]
+    )
+
+    delegations = skale_manager.delegation_controller.get_all_delegations_by_validator(
+        validator_id=D_VALIDATOR_ID
+    )
+    delegation_id = delegations[-1]['id']
+    assert delegations[-1]['status'] == 'PROPOSED'
+
+    result = runner.invoke(
+        _cancel_delegation,
+        [
+            str(delegation_id),
+            '--pk-file', SECOND_TEST_PK_FILE
+        ]
+    )
+
+    delegations = skale_manager.delegation_controller.get_all_delegations_by_validator(
+        validator_id=D_VALIDATOR_ID
+    )
+    assert delegations[-1]['id'] == delegation_id
+    assert delegations[-1]['status'] == 'CANCELED'
+    assert result.exit_code == 0
+    _skip_evm_time(skale_manager.web3, MONTH_IN_SECONDS)
+
+
+def test_info(runner, skale_allocator_beneficiary):
+    result = runner.invoke(
+        _info,
+        [
+            skale_allocator_beneficiary.wallet.address
+        ]
+    )
+    output_list = result.output.splitlines()
+    escrow_address = skale_allocator_beneficiary.allocator.get_escrow_address(
+        skale_allocator_beneficiary.wallet.address
+    )
+
+    assert f'\x1b(0x\x1b(B Beneficiary address \x1b(0x\x1b(B {skale_allocator_beneficiary.wallet.address} \x1b(0x\x1b(B' in output_list # noqa
+    assert f'\x1b(0x\x1b(B Escrow address      \x1b(0x\x1b(B {escrow_address} \x1b(0x\x1b(B' in output_list  # noqa
+    assert '\x1b(0x\x1b(B Status              \x1b(0x\x1b(B ACTIVE                                     \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Plan ID             \x1b(0x\x1b(B 1                                          \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Start month         \x1b(0x\x1b(B 8                                          \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Full amount         \x1b(0x\x1b(B 5000                                       \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Amount after lockup \x1b(0x\x1b(B 1000                                       \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Finish vesting time \x1b(0x\x1b(B 01.09.2023                                 \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Lockup period end   \x1b(0x\x1b(B 01.03.2021                                 \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting active      \x1b(0x\x1b(B True                                       \x1b(0x\x1b(B' in output_list # noqa
+
+
+def test_plan_info(runner, skale_allocator_beneficiary):
+    result = runner.invoke(
+        _plan_info,
+        [
+            '1'
+        ]
+    )
+    output_list = result.output.splitlines()
+
+    assert '\x1b(0x\x1b(B Plan ID                    \x1b(0x\x1b(B 1    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Total vesting duration     \x1b(0x\x1b(B 36   \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting cliff              \x1b(0x\x1b(B 6    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting interval time unit \x1b(0x\x1b(B 1    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Vesting interval           \x1b(0x\x1b(B 6    \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Is delegation allowed      \x1b(0x\x1b(B True \x1b(0x\x1b(B' in output_list # noqa
+    assert '\x1b(0x\x1b(B Is terminatable            \x1b(0x\x1b(B True \x1b(0x\x1b(B' in output_list # noqa
+
+
+def test_ls(runner, skale_manager):
+    result = runner.invoke(_validators)
+    output_list = result.output.splitlines()
+
+    validators_info = skale_manager.validator_service.ls()
+    converted_info = convert_validators_info(validators_info)
+    expected_info = list(filter(lambda v: v['status'] == 'Trusted',
+                                converted_info))
+
+    header = list(filter(lambda s: s.strip().startswith('Name'), output_list))
+    assert len(header) == 1
+    pos = output_list.index(header[0])
+    actual_info = output_list[pos + 2:]
+
+    fields = ['name', 'id', 'validator_address', 'description', 'fee_rate',
+              'registration_time', 'minimum_delegation_amount',
+              'status']
+    assert len(actual_info) == len(expected_info)
+    for plain_actual, expected in zip(actual_info, expected_info):
+        actual = plain_actual.split()
+        check_validator_fields(expected, actual, fields)
+
+    assert result.exit_code == 0
+
+
+def test_delegations_skl(runner, skale_manager, skale_allocator_beneficiary):
+    result = runner.invoke(
+        _delegations,
+        [skale_allocator_beneficiary.wallet.address]
+    )
+    output_list = result.output.splitlines()
+    delegation = skale_manager.delegation_controller.get_delegation(0)
+
+    escrow_address = skale_allocator_beneficiary.allocator.get_escrow_address(
+        skale_allocator_beneficiary.wallet.address
+    )
+
+    assert output_list[0] == f'Delegations for address {skale_allocator_beneficiary.wallet.address} (Escrow: {escrow_address}):' # noqa
+    assert str_contains(output_list[2], [
+        'Id', 'Delegator Address', 'Status', 'Validator Id', 'Amount (SKL)',
+        'Delegation period (months)', 'Created At', 'Info'
+    ])
+    assert str_contains(output_list[4], [
+        escrow_address, delegation['info']
+    ])
     assert result.exit_code == 0

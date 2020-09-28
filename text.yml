@@ -53,12 +53,58 @@ escrow:
     help: Withdraw earned bounty to specified address
     recipient_address:
       help: Address of the recipient. Defaults to the sender.
+    beneficiary_address:
+      help: Provide custom beneficiary address to init Escrow
     confirm: |-
       Are you sure you want to withdraw bounty?
+  retrieve_after_termination:
+    beneficiary_address:
+      help: Provide custom beneficiary address to init Escrow
+    address:
+      help: Destination address
+      prompt: Please enter destination address
+  cancel_delegation:
+    help: Cancel pending delegation request
+  info:
+    help: Info about beneficiary by address
+  plan_info:
+    help: Info about beneficiary plan
+  delegations:
+    help: List of delegations for address
+    wei:
+      help: Show delegation amount in wei
+  validators:
+    help: List of available validators
+    wei:
+      help: Show delegation amount in wei
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)
+gas_price:
+  help: Gas price value in Gwei for transaction
 yes_opt:
   prompt: Are you sure?
 wei:
   help: Show amount in wei
+no_escrow: Escrow contract for this beneficiary not found
+address_index:
+  help: Index of the address to use (only for `ledger` wallet type)
+  prompt: Please enter the address index (staring from 0)
+
+wallet:
+  help: Wallet commands
+  send_eth:
+    help: Send ETH tokens to address
+    confirm: |-
+      Are you sure you want to send ETH?
+      Please, re-check all values above before confirming.
+  send_skl:
+    help: Send SKL tokens to address
+    confirm: |-
+      Are you sure you want to send SKL?
+      Please, re-check all values above before confirming.
+  setup_ledger:
+    help: Configure Ledger device account
+    keys_type:
+      help: Type of the Ledger keys (live or legacy)
+      prompt: Enter type of the Ledger keys (live or legacy)
