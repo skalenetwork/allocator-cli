@@ -41,7 +41,7 @@ def send_skl(receiver_address, amount, pk_file):
 
 
 def _send_funds(receiver_address, amount, pk_file, token_type):
-    skale = init_skale_w_wallet_from_config(pk_file)
+    skale = init_skale_w_wallet_from_config(pk_file, manager=True)
     receiver_address = to_checksum_address(receiver_address)
     with yaspin(text='Transferring funds', color=SPIN_COLOR) as sp:
         try:

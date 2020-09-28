@@ -166,6 +166,34 @@ Required params:
 
 1) Plan ID - ID of the plan to show
 
+#### List
+
+List of available validators
+
+```bash
+sk-alloc escrow validators
+```
+
+Options:
+
+-   `--wei/-w` - Show tokens amount in wei
+
+#### Delegations
+
+List of delegations for address
+
+```bash
+sk-alloc escrow delegations [ADDRESS]
+```
+
+Required arguments:
+
+1) ADDRESS - Ethereum address of the token holder
+
+Options:
+
+-   `--wei/-w` - Show tokens amount in wei
+
 ### Wallet commands
 
 #### Setup Ledger
@@ -173,7 +201,7 @@ Required params:
 This command works only if you're using the Ledger wallet
 
 ```bash
-sk-val wallet setup-ledger
+sk-alloc wallet setup-ledger
 ```
 
 Required params:
@@ -186,7 +214,7 @@ Required params:
 Send ETH tokens to specific address
 
 ```bash
-sk-val wallet send-eth [ADDRESS] [AMOUNT]
+sk-alloc wallet send-eth [ADDRESS] [AMOUNT]
 ```
 
 Required arguments:
@@ -202,7 +230,7 @@ Optional arguments:
 Usage example:
 
 ```bash
-sk-val wallet send-eth 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
+sk-alloc wallet send-eth 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
 ```
 
 #### Send SKL tokens
@@ -210,7 +238,7 @@ sk-val wallet send-eth 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file
 Send SKL tokens to specific address
 
 ```bash
-sk-val wallet send-skl [ADDRESS] [AMOUNT]
+sk-alloc wallet send-skl [ADDRESS] [AMOUNT]
 ```
 
 Required arguments:
@@ -226,7 +254,7 @@ Optional arguments:
 Usage example:
 
 ```bash
-sk-val wallet send-skl 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
+sk-alloc wallet send-skl 0x01C19c5d3Ad1C3014145fC82263Fbae09e23924A 0.01 --pk-file ./pk.txt --yes
 ```
 
 ### SGX commands

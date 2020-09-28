@@ -18,9 +18,11 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+import datetime
 
 import texttable
 from terminaltables import SingleTable
+from utils.helper import from_wei, permille_to_percent, to_skl
 
 
 def get_tty_width():
@@ -56,3 +58,66 @@ def print_sgx_info(info):
     ]
     table = SingleTable(table_data)
     print(table.table)
+
+
+def print_validators(validators, wei):
+    m_type = 'SKL - wei' if wei else 'SKL'
+    headers = [
+        'Name',
+        'Id',
+        'Address',
+        'Description',
+        'Fee rate (percent %)',
+        'Registration time',
+        f'Minimum delegation ({m_type})',
+        'Validator status'
+    ]
+    rows = []
+    for validator in validators:
+        dt = datetime.datetime.fromtimestamp(validator['registration_time'])
+        strtime = dt.strftime('%d.%m.%Y-%H:%M:%S')
+        status = 'Trusted' if validator['trusted'] else 'Registered'
+        if not wei:
+            validator['minimum_delegation_amount'] = from_wei(
+                validator['minimum_delegation_amount'])
+        fee_rate_percent = permille_to_percent(validator['fee_rate'])
+        rows.append([
+            validator['name'],
+            validator['id'],
+            validator['validator_address'],
+            validator['description'],
+            fee_rate_percent,
+            strtime,
+            validator['minimum_delegation_amount'],
+            status
+        ])
+    print(Formatter().table(headers, rows))
+
+
+def print_delegations(delegations: list, wei: bool) -> None:
+    amount_header = 'Amount (wei)' if wei else 'Amount (SKL)'
+    headers = [
+        'Id',
+        'Delegator Address',
+        'Status',
+        'Validator Id',
+        amount_header,
+        'Delegation period (months)',
+        'Created At',
+        'Info'
+    ]
+    rows = []
+    for delegation in delegations:
+        date = datetime.datetime.fromtimestamp(delegation['created'])
+        amount = delegation['amount'] if wei else to_skl(delegation['amount'])
+        rows.append([
+            delegation['id'],
+            delegation['address'],
+            delegation['status'],
+            delegation['validator_id'],
+            amount,
+            delegation['delegation_period'],
+            date,
+            delegation['info']
+        ])
+    print(Formatter().table(headers, rows))

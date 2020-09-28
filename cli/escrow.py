@@ -20,7 +20,8 @@
 import click
 
 from core.escrow import (delegate, undelegate, retrieve, withdraw_bounty, plan_info,
-                         cancel_pending_delegation, retrieve_after_termination, info)
+                         cancel_pending_delegation, retrieve_after_termination, info, delegations,
+                         validators_list)
 
 from utils.helper import abort_if_false, to_wei
 from utils.constants import DELEGATION_PERIOD_OPTIONS
@@ -68,8 +69,8 @@ def escrow():
 @click.option(
     '--info',
     type=str,
-    help=TEXTS['delegate']['info']['help'],
-    prompt=TEXTS['delegate']['info']['prompt']
+    help=TEXTS['delegate']['info']['help']
+    # prompt=TEXTS['delegate']['info']['prompt']
 )
 @click.option(
     '--pk-file',
@@ -85,6 +86,8 @@ def escrow():
               prompt=TEXTS['delegate']['confirm'])
 def _delegate(validator_id, amount, delegation_period, info, pk_file,
               gas_price):
+    if info is None:
+        info = ''
     delegate(
         validator_id=validator_id,
         amount=amount,
@@ -226,3 +229,17 @@ def _plan_info(plan_id):
     plan_info(
         plan_id=int(plan_id)
     )
+
+
+@escrow.command('delegations', help=TEXTS['delegations']['help'])
+@click.argument('address')
+@click.option('--wei', '-w', is_flag=True, help=TEXTS['delegations']['wei']['help'])
+def _delegations(address, wei):
+    delegations(address, wei)
+
+
+@escrow.command('validators', help=TEXTS['validators']['help'])
+@click.option('--wei', '-w', is_flag=True, help=TEXTS['validators']['wei']['help'])
+@click.option('--all', is_flag=True)
+def _validators(wei, all):
+    validators_list(wei, all)
