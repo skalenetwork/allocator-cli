@@ -58,7 +58,7 @@ def init_skale_manager(endpoint, wallet=None, disable_spin=DISABLE_SPIN):
 
 
 def init_skale_w_wallet(endpoint, wallet_type, pk_file=None, ledger_config={},
-                        disable_spin=DISABLE_SPIN):
+                        manager=False, disable_spin=DISABLE_SPIN):
     """Init instance of SKALE library with wallet"""
     web3 = init_web3(endpoint)
     if wallet_type == 'ledger':
@@ -79,6 +79,8 @@ def init_skale_w_wallet(endpoint, wallet_type, pk_file=None, ledger_config={},
         with open(pk_file, 'r') as f:
             pk = str(f.read()).strip()
         wallet = Web3Wallet(pk, web3)
+    if manager:
+        return init_skale_manager(endpoint, wallet, disable_spin)
     return init_skale(endpoint, wallet, disable_spin)
 
 
@@ -98,7 +100,7 @@ def init_skale_manager_from_config():
     return init_skale_manager(config['endpoint'])
 
 
-def init_skale_w_wallet_from_config(pk_file=None):
+def init_skale_w_wallet_from_config(pk_file=None, manager=False):
     config = get_config()
     ledger_config = get_ledger_wallet_info()
     if not config:
@@ -115,7 +117,8 @@ def init_skale_w_wallet_from_config(pk_file=None):
         print('You should initialize sgx wallet first with <sk-alloc sgx init>')
         return
 
-    return init_skale_w_wallet(config['endpoint'], config['wallet'], pk_file, ledger_config)
+    return init_skale_w_wallet(config['endpoint'], config['wallet'], pk_file, ledger_config,
+                               manager)
 
 
 def get_data_from_config():

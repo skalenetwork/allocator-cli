@@ -7,9 +7,10 @@ from skale.utils.contracts_provision.allocator import connect_test_beneficiary
 
 from cli.escrow import (
     _delegate, _undelegate, _retrieve, _withdraw_bounty, _cancel_delegation,
-    _retrieve_after_termination, _info, _plan_info
+    _retrieve_after_termination, _info, _plan_info, _delegations, _validators
 )
 from utils.helper import to_wei
+from tests.helper import check_validator_fields, convert_validators_info, str_contains
 from tests.constants import (TEST_PK_FILE, SECOND_TEST_PK_FILE, D_VALIDATOR_ID, D_DELEGATION_AMOUNT,
                              D_DELEGATION_PERIOD, D_DELEGATION_INFO, DELEGATION_AMOUNT_SKL)
 
@@ -276,3 +277,51 @@ def test_plan_info(runner, skale_allocator_beneficiary):
     assert '\x1b(0x\x1b(B Vesting interval           \x1b(0x\x1b(B 6    \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Is delegation allowed      \x1b(0x\x1b(B True \x1b(0x\x1b(B' in output_list # noqa
     assert '\x1b(0x\x1b(B Is terminatable            \x1b(0x\x1b(B True \x1b(0x\x1b(B' in output_list # noqa
+
+
+def test_ls(runner, skale_manager):
+    result = runner.invoke(_validators)
+    output_list = result.output.splitlines()
+
+    validators_info = skale_manager.validator_service.ls()
+    converted_info = convert_validators_info(validators_info)
+    expected_info = list(filter(lambda v: v['status'] == 'Trusted',
+                                converted_info))
+
+    header = list(filter(lambda s: s.strip().startswith('Name'), output_list))
+    assert len(header) == 1
+    pos = output_list.index(header[0])
+    actual_info = output_list[pos + 2:]
+
+    fields = ['name', 'id', 'validator_address', 'description', 'fee_rate',
+              'registration_time', 'minimum_delegation_amount',
+              'status']
+    assert len(actual_info) == len(expected_info)
+    for plain_actual, expected in zip(actual_info, expected_info):
+        actual = plain_actual.split()
+        check_validator_fields(expected, actual, fields)
+
+    assert result.exit_code == 0
+
+
+def test_delegations_skl(runner, skale_manager, skale_allocator_beneficiary):
+    result = runner.invoke(
+        _delegations,
+        [skale_allocator_beneficiary.wallet.address]
+    )
+    output_list = result.output.splitlines()
+    delegation = skale_manager.delegation_controller.get_delegation(0)
+
+    escrow_address = skale_allocator_beneficiary.allocator.get_escrow_address(
+        skale_allocator_beneficiary.wallet.address
+    )
+
+    assert output_list[0] == f'Delegations for address {skale_allocator_beneficiary.wallet.address} (Escrow: {escrow_address}):' # noqa
+    assert str_contains(output_list[2], [
+        'Id', 'Delegator Address', 'Status', 'Validator Id', 'Amount (SKL)',
+        'Delegation period (months)', 'Created At', 'Info'
+    ])
+    assert str_contains(output_list[4], [
+        escrow_address, delegation['info']
+    ])
+    assert result.exit_code == 0
