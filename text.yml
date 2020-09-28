@@ -72,6 +72,8 @@ escrow:
 
 pk_file:
   help: Path to file with private key (only for `software` wallet type)
+gas_price:
+  help: Gas price value in Gwei for transaction
 yes_opt:
   prompt: Are you sure?
 wei:

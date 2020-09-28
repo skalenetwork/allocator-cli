@@ -22,6 +22,7 @@ import json
 import urllib
 import datetime
 import logging
+from decimal import Decimal
 
 from web3 import Web3
 
@@ -78,16 +79,22 @@ def abort_if_false(ctx, param, value):
         ctx.abort()
 
 
-def to_skl(wei):  # todo: replace with from_wei()
-    return Web3.fromWei(wei, 'ether')
+def to_skl(wei, unit='ether'):  # todo: replace with from_wei()
+    if wei is None:
+        return None
+    return Web3.fromWei(Decimal(wei), unit)
 
 
-def from_wei(val):
-    return Web3.fromWei(val, 'ether')
+def from_wei(val, unit='ether'):
+    if val is None:
+        return None
+    return Web3.fromWei(Decimal(val), unit)
 
 
-def to_wei(val):
-    return Web3.toWei(val, 'ether')
+def to_wei(val, unit='ether'):
+    if val is None:
+        return None
+    return Web3.toWei(Decimal(val), unit)
 
 
 def permille_to_percent(val):
