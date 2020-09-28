@@ -79,6 +79,7 @@ def init_skale_w_wallet(endpoint, wallet_type, pk_file=None, ledger_config={},
         with open(pk_file, 'r') as f:
             pk = str(f.read()).strip()
         wallet = Web3Wallet(pk, web3)
+    print(f'Wallet address that will be used for signing the transaction: {wallet.address}\n')
     if manager:
         return init_skale_manager(endpoint, wallet, disable_spin)
     return init_skale(endpoint, wallet, disable_spin)

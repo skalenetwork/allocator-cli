@@ -69,8 +69,8 @@ def escrow():
 @click.option(
     '--info',
     type=str,
-    help=TEXTS['delegate']['info']['help'],
-    prompt=TEXTS['delegate']['info']['prompt']
+    help=TEXTS['delegate']['info']['help']
+    # prompt=TEXTS['delegate']['info']['prompt']
 )
 @click.option(
     '--pk-file',
@@ -86,6 +86,8 @@ def escrow():
               prompt=TEXTS['delegate']['confirm'])
 def _delegate(validator_id, amount, delegation_period, info, pk_file,
               gas_price):
+    if info is None:
+        info = ''
     delegate(
         validator_id=validator_id,
         amount=amount,
