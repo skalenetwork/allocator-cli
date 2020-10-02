@@ -26,7 +26,8 @@ from skale.utils.web3_utils import to_checksum_address
 
 from utils.web3_utils import (init_skale_w_wallet_from_config, init_skale_from_config,
                               init_skale_manager_from_config)
-from utils.helper import to_wei, from_wei, escrow_exists, print_no_escrow_msg, convert_timestamp
+from utils.helper import (to_wei, from_wei, escrow_exists, print_no_escrow_msg, convert_timestamp,
+                          print_gas_price)
 from utils.print_formatters import print_delegations, print_validators
 from utils.constants import SPIN_COLOR
 from utils.texts import Texts
@@ -41,6 +42,9 @@ def delegate(validator_id, amount, delegation_period, info, pk_file, gas_price):
 
     if not skale:
         return
+    if gas_price is None:
+        gas_price = skale.gas_price
+        print_gas_price(gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -63,6 +67,7 @@ def delegate(validator_id, amount, delegation_period, info, pk_file, gas_price):
             sp.write(str(err))
             return
         sp.write("✔ Delegation request sent")
+        print(f'Transaction hash: {tx_res.tx_hash}')
 
 
 def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
@@ -70,6 +75,9 @@ def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
 
     if not skale:
         return
+    if gas_price is None:
+        gas_price = skale.gas_price
+        print_gas_price(gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -88,6 +96,7 @@ def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
             sp.write(str(err))
             return
         sp.write("✔ Successfully undelegated")
+        print(f'Transaction hash: {tx_res.tx_hash}')
 
 
 def retrieve(pk_file: str, gas_price: int) -> None:
@@ -95,6 +104,9 @@ def retrieve(pk_file: str, gas_price: int) -> None:
 
     if not skale:
         return
+    if gas_price is None:
+        gas_price = skale.gas_price
+        print_gas_price(gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -112,6 +124,7 @@ def retrieve(pk_file: str, gas_price: int) -> None:
             sp.write(str(err))
             return
         sp.write("✔ Successfully retrieved tokens")
+        print(f'Transaction hash: {tx_res.tx_hash}')
 
 
 def retrieve_after_termination(address: str, beneficiary_address: str,
@@ -119,6 +132,9 @@ def retrieve_after_termination(address: str, beneficiary_address: str,
     skale = init_skale_w_wallet_from_config(pk_file)
     if not skale:
         return
+    if gas_price is None:
+        gas_price = skale.gas_price
+        print_gas_price(gas_price)
     with yaspin(text='Retrieving tokens after termination', color=SPIN_COLOR) as sp:
         if not beneficiary_address:
             beneficiary_address = skale.wallet.address
@@ -138,6 +154,7 @@ def retrieve_after_termination(address: str, beneficiary_address: str,
             sp.write(str(err))
             return
         sp.write("✔ Successfully retrieved tokens")
+        print(f'Transaction hash: {tx_res.tx_hash}')
 
 
 def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
@@ -146,6 +163,9 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
 
     if not skale:
         return
+    if gas_price is None:
+        gas_price = skale.gas_price
+        print_gas_price(gas_price)
     if not recipient_address:
         recipient_address = skale.wallet.address
     if not beneficiary_address:
@@ -169,6 +189,7 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
             sp.write(str(err))
             return
         sp.write(f'✔ Bounty successfully transferred to {recipient_address}')
+        print(f'Transaction hash: {tx_res.tx_hash}')
 
 
 def cancel_pending_delegation(delegation_id: int, pk_file: str,
@@ -177,6 +198,9 @@ def cancel_pending_delegation(delegation_id: int, pk_file: str,
 
     if not skale:
         return
+    if gas_price is None:
+        gas_price = skale.gas_price
+        print_gas_price(gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -194,6 +218,7 @@ def cancel_pending_delegation(delegation_id: int, pk_file: str,
             sp.write(str(err))
             return
         sp.write("✔ Delegation request canceled")
+        print(f'Transaction hash: {tx_res.tx_hash}')
 
 
 def info(beneficiary_address: str, wei: bool) -> None:
