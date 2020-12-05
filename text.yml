@@ -103,6 +103,8 @@ wallet:
     confirm: |-
       Are you sure you want to send SKL?
       Please, re-check all values above before confirming.
+  info:
+    help: Show wallet info
   setup_ledger:
     help: Configure Ledger device account
     keys_type:

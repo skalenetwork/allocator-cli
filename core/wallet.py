@@ -58,6 +58,11 @@ def _send_funds(receiver_address, amount, pk_file, token_type):
             print_err_with_log_path()
 
 
+def wallet_info(pk_file):
+    skale = init_skale_w_wallet_from_config(pk_file, manager=True)
+    print(f'Address: {skale.wallet.address}')
+
+
 def setup_ledger(address_index, keys_type):
     config = get_config()
     if not config:

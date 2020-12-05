@@ -1,7 +1,7 @@
 import logging
 import click
 
-from core.wallet import send_eth, send_skl, setup_ledger
+from core.wallet import send_eth, send_skl, setup_ledger, wallet_info
 from utils.helper import abort_if_false
 from utils.texts import Texts
 from utils.constants import LEDGER_KEYS_TYPES
@@ -46,6 +46,15 @@ def _send_eth(receiver_address, amount, pk_file):
               expose_value=False, prompt=TEXTS['send_skl']['confirm'])
 def _send_skl(receiver_address, amount, pk_file):
     send_skl(receiver_address, amount, pk_file)
+
+
+@wallet.command('info', help=TEXTS['info']['help'])
+@click.option(
+    '--pk-file',
+    help=G_TEXTS['pk_file']['help']
+)
+def info(pk_file):
+    wallet_info(pk_file)
 
 
 @wallet.command('setup-ledger', help=TEXTS['setup_ledger']['help'])
