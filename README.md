@@ -34,6 +34,10 @@ sudo chmod +x /usr/local/bin/sk-alloc
 
 All allocator-cli version numbers are available here: https://github.com/skalenetwork/allocator-cli/releases
 
+### ABI file
+
+To use all of the commands avaliable in the allocator-cli you'll need a special ABI file that contains addresses and ABIs for both SKALE Manager and SKALE Allocator
+
 ## CLI Usage
 
 ### Init
