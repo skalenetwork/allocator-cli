@@ -50,7 +50,7 @@ extras_require = {
         "mock==4.0.2",
         "boto3==1.13.7",
         "pytest-cov==2.10.1",
-        "codecov==2.1.7"
+        "codecov==2.1.12"
     ],
     'hw-wallet': [
         "ledgerblue==0.1.31"
