@@ -28,7 +28,6 @@ from decimal import Decimal
 import click
 from web3 import Web3
 
-from core.transaction import TxFee
 from utils.constants import (
     SKALE_ALLOCATOR_CONFIG_FILE,
     SKALE_ALLOCATOR_ABI_FILE,
@@ -37,6 +36,7 @@ from utils.constants import (
     DEBUG_LOG_FILEPATH
 )
 from utils.texts import Texts
+from utils.transaction import TxFee
 
 
 G_TEXTS = Texts()
