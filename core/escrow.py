@@ -17,34 +17,51 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from yaspin import yaspin
-from terminaltables import SingleTable
+import dataclasses
+from typing import Optional
 
-from web3 import Web3
 from skale.transactions.result import TransactionError
 from skale.utils.web3_utils import to_checksum_address
+from terminaltables import SingleTable
+from web3 import Web3
+from yaspin import yaspin
 
-from utils.web3_utils import (init_skale_w_wallet_from_config, init_skale_from_config,
-                              init_skale_manager_from_config)
-from utils.helper import (to_wei, from_wei, escrow_exists, print_no_escrow_msg, convert_timestamp,
-                          print_gas_price)
-from utils.print_formatters import print_delegations, print_validators
 from utils.constants import SPIN_COLOR
+from utils.helper import (
+    to_wei,
+    from_wei,
+    escrow_exists,
+    print_no_escrow_msg,
+    convert_timestamp
+)
+from utils.print_formatters import print_delegations, print_validators
 from utils.texts import Texts
+from utils.transaction import TxFee
+from utils.web3_utils import (
+    init_skale_w_wallet_from_config,
+    init_skale_from_config,
+    init_skale_manager_from_config
+)
 
 
 G_TEXTS = Texts()
 D_DELEGATION_PERIOD = 3
 
 
-def delegate(validator_id, amount, delegation_period, info, pk_file, gas_price):
+def delegate(
+    validator_id,
+    amount,
+    delegation_period,
+    info,
+    pk_file,
+    fee: Optional[TxFee]
+):
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
         return
-    if gas_price is None:
-        gas_price = skale.gas_price
-        print_gas_price(gas_price)
+
+    fee = fee or TxFee(gas_price=skale.gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -57,9 +74,7 @@ def delegate(validator_id, amount, delegation_period, info, pk_file, gas_price):
             delegation_period=delegation_period,
             info=info,
             beneficiary_address=skale.wallet.address,
-            wait_for=True,
-            gas_price=gas_price,
-            raise_for_status=False
+            **dataclasses.asdict(fee)
         )
         try:
             tx_res.raise_for_status()
@@ -70,14 +85,16 @@ def delegate(validator_id, amount, delegation_period, info, pk_file, gas_price):
         print(f'Transaction hash: {tx_res.tx_hash}')
 
 
-def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
+def undelegate(
+    delegation_id: int,
+    pk_file: str,
+    fee: Optional[TxFee]
+) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
         return
-    if gas_price is None:
-        gas_price = skale.gas_price
-        print_gas_price(gas_price)
+    fee = fee or TxFee(gas_price=skale.gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -86,9 +103,7 @@ def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
         tx_res = skale.escrow.request_undelegation(
             delegation_id=delegation_id,
             beneficiary_address=skale.wallet.address,
-            wait_for=True,
-            gas_price=gas_price,
-            raise_for_status=False
+            **dataclasses.asdict(fee)
         )
         try:
             tx_res.raise_for_status()
@@ -99,14 +114,15 @@ def undelegate(delegation_id: int, pk_file: str, gas_price: int) -> None:
         print(f'Transaction hash: {tx_res.tx_hash}')
 
 
-def retrieve(pk_file: str, gas_price: int) -> None:
+def retrieve(
+    pk_file: str,
+    fee: Optional[TxFee]
+) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
         return
-    if gas_price is None:
-        gas_price = skale.gas_price
-        print_gas_price(gas_price)
+    fee = fee or TxFee(gas_price=skale.gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -114,9 +130,7 @@ def retrieve(pk_file: str, gas_price: int) -> None:
     with yaspin(text='Retrieving tokens', color=SPIN_COLOR) as sp:
         tx_res = skale.escrow.retrieve(
             beneficiary_address=skale.wallet.address,
-            wait_for=True,
-            gas_price=gas_price,
-            raise_for_status=False,
+            **dataclasses.asdict(fee)
         )
         try:
             tx_res.raise_for_status()
@@ -127,14 +141,16 @@ def retrieve(pk_file: str, gas_price: int) -> None:
         print(f'Transaction hash: {tx_res.tx_hash}')
 
 
-def retrieve_after_termination(address: str, beneficiary_address: str,
-                               pk_file: str, gas_price: int) -> None:
+def retrieve_after_termination(
+    address: str,
+    beneficiary_address: str,
+    pk_file: str,
+    fee: Optional[TxFee]
+) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
     if not skale:
         return
-    if gas_price is None:
-        gas_price = skale.gas_price
-        print_gas_price(gas_price)
+    fee = fee or TxFee(gas_price=skale.gas_price)
     with yaspin(text='Retrieving tokens after termination', color=SPIN_COLOR) as sp:
         if not beneficiary_address:
             beneficiary_address = skale.wallet.address
@@ -144,9 +160,7 @@ def retrieve_after_termination(address: str, beneficiary_address: str,
         tx_res = skale.escrow.retrieve_after_termination(
             address=address,
             beneficiary_address=beneficiary_address,
-            wait_for=True,
-            gas_price=gas_price,
-            raise_for_status=False
+            **dataclasses.asdict(fee)
         )
         try:
             tx_res.raise_for_status()
@@ -157,15 +171,18 @@ def retrieve_after_termination(address: str, beneficiary_address: str,
         print(f'Transaction hash: {tx_res.tx_hash}')
 
 
-def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
-                    pk_file, gas_price: int):
+def withdraw_bounty(
+    validator_id,
+    recipient_address,
+    beneficiary_address,
+    pk_file,
+    fee: Optional[TxFee]
+):
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
         return
-    if gas_price is None:
-        gas_price = skale.gas_price
-        print_gas_price(gas_price)
+    fee = fee or TxFee(gas_price=skale.gas_price)
     if not recipient_address:
         recipient_address = skale.wallet.address
     if not beneficiary_address:
@@ -179,9 +196,7 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
             validator_id=validator_id,
             to=recipient_address,
             beneficiary_address=beneficiary_address,
-            raise_for_status=False,
-            gas_price=gas_price,
-            wait_for=True
+            **dataclasses.asdict(fee)
         )
         try:
             tx_res.raise_for_status()
@@ -192,15 +207,16 @@ def withdraw_bounty(validator_id, recipient_address, beneficiary_address,
         print(f'Transaction hash: {tx_res.tx_hash}')
 
 
-def cancel_pending_delegation(delegation_id: int, pk_file: str,
-                              gas_price: int) -> None:
+def cancel_pending_delegation(
+    delegation_id: int,
+    pk_file: str,
+    fee: Optional[TxFee]
+) -> None:
     skale = init_skale_w_wallet_from_config(pk_file)
 
     if not skale:
         return
-    if gas_price is None:
-        gas_price = skale.gas_price
-        print_gas_price(gas_price)
+    fee = fee or TxFee(gas_price=skale.gas_price)
     if not escrow_exists(skale, skale.wallet.address):
         print_no_escrow_msg(skale.wallet.address)
         return
@@ -209,8 +225,7 @@ def cancel_pending_delegation(delegation_id: int, pk_file: str,
         tx_res = skale.escrow.cancel_pending_delegation(
             delegation_id=delegation_id,
             beneficiary_address=skale.wallet.address,
-            gas_price=gas_price,
-            raise_for_status=False
+            **dataclasses.asdict(fee)
         )
         try:
             tx_res.raise_for_status()
