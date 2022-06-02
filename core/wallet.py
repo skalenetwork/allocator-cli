@@ -40,7 +40,7 @@ def transfer_eth(receiver_address, amount, pk_file):
     _send_funds(receiver_address, amount, pk_file, 'eth')
 
 
-def transfer_skale(receiver_address, amount, pk_file):
+def transfer_skl(receiver_address, amount, pk_file):
     _send_funds(receiver_address, amount, pk_file, 'skl')
 
 
