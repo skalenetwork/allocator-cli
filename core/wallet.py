@@ -36,12 +36,12 @@ from utils.web3_utils import init_skale_w_wallet_from_config
 logger = logging.getLogger(__name__)
 
 
-def transfer_eth(receiver_address, amount, pk_file):
-    _send_funds(receiver_address, amount, pk_file, 'eth')
+def transfer_eth(receiver_address, amount, pk_file, fee: Optional[TxFee]):
+    _send_funds(receiver_address, amount, pk_file, fee, 'eth')
 
 
-def transfer_skl(receiver_address, amount, pk_file):
-    _send_funds(receiver_address, amount, pk_file, 'skl')
+def transfer_skl(receiver_address, amount, pk_file, fee: Optional[TxFee]):
+    _send_funds(receiver_address, amount, pk_file, fee, 'skl')
 
 
 def _send_funds(receiver_address, amount, pk_file, fee: Optional[TxFee], token_type):
@@ -61,7 +61,6 @@ def _send_funds(receiver_address, amount, pk_file, fee: Optional[TxFee], token_t
             elif token_type == 'skl':
                 send_tokens(
                     skale,
-                    skale.wallet,
                     receiver_address,
                     amount,
                     **dataclasses.asdict(fee)

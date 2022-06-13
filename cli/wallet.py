@@ -38,6 +38,7 @@ def _send_eth(receiver_address, amount, pk_file, fee):
 
 
 @wallet.command('send-skl', help=TEXTS['send_skl']['help'])
+@transaction_cmd
 @click.argument('receiver_address')
 @click.argument('amount')
 @click.option('--yes', is_flag=True, callback=abort_if_false,

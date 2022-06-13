@@ -20,7 +20,7 @@
 import dataclasses
 from typing import Optional
 
-from skale.transactions.result import TransactionError
+from skale.transactions.exceptions import TransactionError
 from skale.utils.web3_utils import to_checksum_address
 from terminaltables import SingleTable
 from web3 import Web3
