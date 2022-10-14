@@ -3,16 +3,16 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:22.04
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.8]
     env:
       ETH_PRIVATE_KEY: ${{ secrets.ETH_PRIVATE_KEY }}
       ENDPOINT: ${{ secrets.ENDPOINT }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      MANAGER_TAG: "1.5.2-develop.3"
-      ALLOCATOR_TAG: "2.2.0-develop.4"
+      MANAGER_TAG: "1.9.3-beta.0"
+      ALLOCATOR_TAG: "2.2.2-beta.1"
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
