@@ -15,14 +15,12 @@ jobs:
       ALLOCATOR_TAG: "2.2.2-beta.1"
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Checkout submodules
-      uses: textbook/git-checkout-submodule-action@master
-      with:
-        remote: true
     - name: Install ubuntu dependencies
       run: |
         sudo apt-get update
