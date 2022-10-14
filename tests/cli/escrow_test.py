@@ -1,10 +1,8 @@
 """ Tests for cli/escrow.py module """
 
-import pytest
 from skale.utils.contracts_provision import MONTH_IN_SECONDS, D_PLAN_ID
 from skale.utils.contracts_provision.allocator import connect_test_beneficiary
 from skale.utils.contracts_provision.main import _skip_evm_time
-from skale.utils.web3_utils import private_key_to_address, to_checksum_address
 from skale.wallets.web3_wallet import generate_wallet
 
 from cli.escrow import (
@@ -161,9 +159,6 @@ def test_cancel_delegation(
             '--yes'
         ]
     )
-    with open(SECOND_TEST_PK_FILE) as kfile:
-        key = kfile.read().strip()
-    addr = to_checksum_address(private_key_to_address(key))
     assert result.exit_code == 0
 
     delegations = skale_manager.delegation_controller.get_all_delegations_by_validator(
