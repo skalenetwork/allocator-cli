@@ -54,6 +54,9 @@ def _generate_and_terminate(skale_allocator_vm):
 
 
 def test_info(runner, skale_allocator_beneficiary):
+    from core.escrow import info as core_info
+    out = core_info(skale_allocator_beneficiary.wallet.address)
+    print(out)
     result = runner.invoke(
         _info,
         [
