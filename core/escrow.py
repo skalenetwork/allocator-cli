@@ -18,13 +18,16 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import dataclasses
+import warnings
 from typing import Optional
 
 from skale.transactions.exceptions import TransactionError
 from skale.utils.web3_utils import to_checksum_address
 from terminaltables import SingleTable
 from web3 import Web3
+from web3.exceptions import ContractLogicError
 from yaspin import yaspin
+
 
 from utils.constants import SPIN_COLOR
 from utils.helper import (
@@ -253,12 +256,14 @@ def info(beneficiary_address: str, wei: bool) -> None:
     finish_vesting_time = skale.allocator.get_finish_vesting_time(address_fx)
     lockup_period_end_timestamp = skale.allocator.get_lockup_period_end_timestamp(address_fx)
     is_vesting_active = skale.allocator.is_vesting_active(address_fx)
+    time_of_next_vest = None
     if is_vesting_active:
-        time_of_next_vest = convert_timestamp(
-            skale.allocator.get_time_of_next_vest(address_fx)
-        )
-    else:
-        time_of_next_vest = None
+        try:
+            time_of_next_vest = convert_timestamp(
+                skale.allocator.get_time_of_next_vest(address_fx)
+            )
+        except Exception as e:
+            warnings.warn(f'Cannot get next vesting time: {e}')
 
     # m_type = 'SKL - wei' if wei else 'SKL'
     if wei:
