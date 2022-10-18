@@ -252,8 +252,13 @@ def info(beneficiary_address: str, wei: bool) -> None:
     vested_amount = skale.allocator.calculate_vested_amount(address_fx)
     finish_vesting_time = skale.allocator.get_finish_vesting_time(address_fx)
     lockup_period_end_timestamp = skale.allocator.get_lockup_period_end_timestamp(address_fx)
-    time_of_next_vest = skale.allocator.get_time_of_next_vest(address_fx)
     is_vesting_active = skale.allocator.is_vesting_active(address_fx)
+    if is_vesting_active:
+        time_of_next_vest = convert_timestamp(
+            skale.allocator.get_time_of_next_vest(address_fx)
+        )
+    else:
+        time_of_next_vest = None
 
     # m_type = 'SKL - wei' if wei else 'SKL'
     if wei:
@@ -275,7 +280,7 @@ def info(beneficiary_address: str, wei: bool) -> None:
         ['Vested amount', vested_amount],
         ['Finish vesting time', convert_timestamp(finish_vesting_time)],
         ['Lockup period end', convert_timestamp(lockup_period_end_timestamp)],
-        ['Time of next vest', convert_timestamp(time_of_next_vest)],
+        ['Time of next vest', time_of_next_vest],
         ['Vesting active', is_vesting_active]
     ])
     print(table.table)
