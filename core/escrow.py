@@ -262,7 +262,7 @@ def info(beneficiary_address: str, wei: bool) -> None:
             time_of_next_vest = convert_timestamp(
                 skale.allocator.get_time_of_next_vest(address_fx)
             )
-        except Exception as e:
+        except ContractLogicError as e:
             warnings.warn(f'Cannot get next vesting time: {e}')
 
     # m_type = 'SKL - wei' if wei else 'SKL'
