@@ -48,7 +48,7 @@ extras_require = {
         "twine==3.2.0",
         "mock==4.0.2",
         "boto3==1.13.7",
-        "pytest-cov==2.10.1",
+        "pytest-cov==4.0.0",
         "codecov==2.1.7"
     ],
     'hw-wallet': [
