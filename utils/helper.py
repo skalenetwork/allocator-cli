@@ -17,18 +17,26 @@
 #   You should have received a copy of the GNU Affero General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
-import json
-import urllib
 import datetime
+import functools
+import json
 import logging
+import os
+import urllib
 from decimal import Decimal
 
+import click
 from web3 import Web3
 
+from utils.constants import (
+    SKALE_ALLOCATOR_CONFIG_FILE,
+    SKALE_ALLOCATOR_ABI_FILE,
+    PERMILLE_MULTIPLIER,
+    ZERO_ADDRESS,
+    DEBUG_LOG_FILEPATH
+)
 from utils.texts import Texts
-from utils.constants import (SKALE_ALLOCATOR_CONFIG_FILE, SKALE_ALLOCATOR_ABI_FILE,
-                             PERMILLE_MULTIPLIER, ZERO_ADDRESS, DEBUG_LOG_FILEPATH)
+from utils.transaction import TxFee
 
 
 G_TEXTS = Texts()
@@ -124,3 +132,39 @@ def print_err_with_log_path(e=''):
 
 def print_gas_price(gas_price):
     print(f'Transaction gas price: {from_wei(gas_price, unit="gwei")} Gwei ({gas_price} wei)\n')
+
+
+def transaction_cmd(func):
+    @click.option(
+        '--pk-file',
+        help=G_TEXTS['pk_file']['help']
+    )
+    @click.option(
+        '--gas-price',
+        type=float,
+        help=G_TEXTS['gas_price']['help']
+    )
+    @click.option(
+        '--max-fee',
+        type=float,
+        help=G_TEXTS['max_fee']['help']
+    )
+    @click.option(
+        '--max-priority-fee',
+        help=G_TEXTS['max_priority_fee']['help']
+    )
+    @functools.wraps(func)
+    def wrapper(
+            *args,
+            gas_price=None,
+            max_priority_fee=None,
+            max_fee=None,
+            **kwargs
+    ):
+        fee = TxFee(
+            gas_price=to_wei(gas_price, 'gwei'),
+            max_priority_fee_per_gas=to_wei(max_priority_fee, 'gwei'),
+            max_fee_per_gas=to_wei(max_fee, 'gwei')
+        )
+        return func(*args, fee=fee, **kwargs)
+    return wrapper

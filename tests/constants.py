@@ -17,8 +17,10 @@ TEST_ETH_TRANSFER_AMOUNT = 0.5
 
 # test abi
 
-TEST_SKALE_MANAGER_ABI_PATH = os.path.join(PROJECT_DIR, 'helper-scripts', 'contracts_data',
-                                           'universal.json')
+HELPER_SCRIPTS_DIR = os.path.join(PROJECT_DIR, 'helper-scripts')
+
+TEST_SKALE_MANAGER_ABI_PATH = os.getenv('TEST_SKALE_MANAGER_ABI_PATH') or \
+    os.path.join(HELPER_SCRIPTS_DIR, 'contracts_data', 'universal.json')
 
 # validator
 
@@ -29,11 +31,11 @@ D_VALIDATOR_FEE = 10.5
 D_VALIDATOR_MIN_DEL = 1000
 
 D_DELEGATION_ID = 0
-D_DELEGATION_AMOUNT = 55000000
+D_DELEGATION_AMOUNT = 25000000
 D_DELEGATION_PERIOD = 2
 D_DELEGATION_INFO = 'test'
 
 SGX_SERVER_URL = os.getenv('SGX_SERVER_URL')
 SSL_PORT = 1027
 
-DELEGATION_AMOUNT_SKL = 100
+DELEGATION_AMOUNT_SKL = 45

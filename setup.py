@@ -43,9 +43,8 @@ extras_require = {
         "isort>=4.2.15,<4.3.22",
     ],
     'dev': [
-        "PyInstaller==3.6",
+        "PyInstaller==5.5",
         "pytest==5.4.2",
-        "pytest-cov==2.8.1",
         "twine==3.2.0",
         "mock==4.0.2",
         "boto3==1.13.7",
@@ -75,7 +74,7 @@ setup(
     url='https://github.com/skalenetwork/allocator-cli',
     install_requires=[
         "click==7.1.2",
-        "skale.py==4.1dev6",
+        "skale.py==5.8dev0",
         "terminaltables==3.1.0",
         "yaspin==0.16.0",
         "texttable==1.6.2",
@@ -91,6 +90,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
     ],
 )

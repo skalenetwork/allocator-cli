@@ -118,8 +118,13 @@ def init_skale_w_wallet_from_config(pk_file=None, manager=False):
         print('You should initialize sgx wallet first with <sk-alloc sgx init>')
         return
 
-    return init_skale_w_wallet(config['endpoint'], config['wallet'], pk_file, ledger_config,
-                               manager)
+    return init_skale_w_wallet(
+        config['endpoint'],
+        config['wallet'],
+        pk_file,
+        ledger_config,
+        manager
+    )
 
 
 def get_data_from_config():

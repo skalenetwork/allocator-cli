@@ -1,5 +1,8 @@
 """ SKALE config test """
 
+import os
+import subprocess
+
 import pytest
 from click.testing import CliRunner
 
@@ -7,6 +10,7 @@ from utils.helper import get_config
 from utils.web3_utils import init_skale_w_wallet_from_config
 
 from tests.constants import TEST_PK_FILE, SECOND_TEST_PK_FILE
+from tests.helper import get_executable_path
 from tests.prepare_data import init_test_skale_manager
 
 
@@ -43,3 +47,21 @@ def runner():
 
 def str_contains(string, values):
     return all(x in string for x in values)
+
+
+@pytest.fixture(scope='session')
+def executable():
+    cmd = ['scripts/build.sh', '0.0.0', 'test-branch']
+    result = subprocess.run(
+        cmd,
+        shell=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env={**os.environ}
+    )
+    assert result.returncode == 0
+    executable_path = get_executable_path()
+    try:
+        yield executable_path
+    finally:
+        os.remove(executable_path)
