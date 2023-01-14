@@ -74,7 +74,7 @@ setup(
     url='https://github.com/skalenetwork/allocator-cli',
     install_requires=[
         "click==7.1.2",
-        "skale.py==5.8dev0",
+        "skale.py==5.8.dev5",
         "terminaltables==3.1.0",
         "yaspin==0.16.0",
         "texttable==1.6.2",
