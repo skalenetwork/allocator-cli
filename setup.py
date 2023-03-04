@@ -44,7 +44,7 @@ extras_require = {
     ],
     'dev': [
         "PyInstaller==5.5",
-        "pytest==5.4.2",
+        "pytest==7.2.2",
         "twine==3.2.0",
         "mock==4.0.2",
         "boto3==1.13.7",
